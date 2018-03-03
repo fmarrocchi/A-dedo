@@ -8,5 +8,4 @@
     tools:context="com.proyectos.florm.a_dedo.ViajeActivity"
     tools:showIn="@layout/app_bar_viaje"
     android:layout_marginTop="5dp">
-
 </android.support.constraint.ConstraintLayout>
