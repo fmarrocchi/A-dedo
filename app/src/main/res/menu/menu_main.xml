@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.proyectos.florm.a_dedo.MainActivity">
+
+    <item android:id="@+id/MnuOpc1" android:title="Opcion1"
+        android:icon="@android:drawable/ic_menu_add"
+        app:showAsAction="ifRoom|withText" />
+
+    <item android:id="@+id/MnuOpc2" android:title="Opcion2"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item android:id="@+id/MnuOpc3" android:title="Opcion3"
+        android:icon="@android:drawable/ic_menu_info_details"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        app:showAsAction="never" />
+</menu>
