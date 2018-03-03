@@ -13,7 +13,8 @@ import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.proyectos.florm.a_dedo.Holders.AdaptadorViaje;
+import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
+import com.proyectos.florm.a_dedo.Models.Viaje;
 
 public class ListarViajesActivity extends AppCompatActivity {
 
@@ -38,36 +39,21 @@ public class ListarViajesActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mostrarViajes();
     }
 
     private void mostrarViajes(){
         //Inicialización RecyclerView
         recycler = (RecyclerView) findViewById(R.id.listaViajes);
         recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        final AdaptadorViaje adaptador = new AdaptadorViaje();
-
-        adaptador.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //Muestro en log un mje con el item seleccioando
-                Log.i("DemoRecView", "Pulsado el elemento " + recycler.getChildPosition(v));
-
-                //Voy a la actividad ver detalles del viaje
-            }
-        });
-
-        recycler.setAdapter(adaptador);
-
-        //Inicialización RecyclerView
-        recycler = (RecyclerView) findViewById(R.id.listaViajes);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-/*
         mAdapter =
                 new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(
-                        Viaje.class, R.layout.listitem_viaje, ViajeHolder.class, mDataBase) {
+                        Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase) {
 
-                    public void populateViewHolder(ViajeHolder viajeViewHolder, Viaje viaje, int position) {
+                    public void populateViewHolder(ViajeViewHolder viajeViewHolder, Viaje viaje, int position) {
                         viajeViewHolder.setDestino(viaje.getDestino()+ " - ");
                         viajeViewHolder.setSalida(viaje.getSalida());
                         viajeViewHolder.setFecha(viaje.getFecha());
@@ -75,7 +61,8 @@ public class ListarViajesActivity extends AppCompatActivity {
                         viajeViewHolder.setPasajeros(viaje.getPasajeros().toString());
                     }
                 };
-*/
+        recycler.setAdapter(mAdapter);
+
     }
 
     protected void onDestroy() {

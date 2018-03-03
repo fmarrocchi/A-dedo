@@ -14,11 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.proyectos.florm.a_dedo.Holders.AdaptadorViaje;
-import com.proyectos.florm.a_dedo.Models.Viaje;
 
 public class MainActivity extends AppCompatActivity {
 
