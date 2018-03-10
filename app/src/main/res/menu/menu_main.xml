@@ -7,14 +7,12 @@
         android:icon="@android:drawable/ic_menu_add"
         app:showAsAction="ifRoom|withText" />
 
-    <item android:id="@+id/MnuOpc2" android:title="Opcion2"
-        android:icon="@android:drawable/ic_menu_search"
+    <item android:id="@+id/menu_eliminar_cuenta" android:title="Eliminar cuenta"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="withText"/>
 
-    <item android:id="@+id/MnuOpc3" android:title="Opcion3"
-        android:icon="@android:drawable/ic_menu_info_details"
-        app:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/menu_cerrar_sesion" android:title="Cerrar sesion"
+        app:showAsAction="withText"/>
 
     <item android:id="@+id/action_settings"
         android:orderInCategory="100"
