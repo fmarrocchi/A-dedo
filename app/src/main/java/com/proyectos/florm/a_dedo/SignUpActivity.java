@@ -126,7 +126,7 @@ public class SignUpActivity extends AppCompatActivity {
                     foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
 
                 User user = new User(nombre, apellido, direccion, localidad, foto, mail, tel);
-                String key = mDatabase.child("users").push().getKey();
+                String key ="clave";
 
                 mDatabase.child("users").child(tel).setValue(user, new DatabaseReference.CompletionListener(){
                     //El segundo parametro es para recibir un mensaje si hubo error en el setValue

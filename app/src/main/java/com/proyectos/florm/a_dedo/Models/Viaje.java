@@ -12,13 +12,13 @@ public class Viaje {
     private Integer pasajeros;
     private String estado; //activo- completo - terminado
     private String informacion;
-    private String conductor; //Cambiar string a User cuando cree clase usuario
+    private String conductor;
 
 
     //Constructor por defecto
     public Viaje(){ }
 
-    public Viaje(String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+    public Viaje(String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
         destino = des;
         salida = sal;
         pasajeros = pas;
@@ -26,10 +26,8 @@ public class Viaje {
         hora = hs;
         fecha = f;
         estado = est;
-        informacion = info;
-     // conductor = cond;
+        conductor = cond;
     }
-
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -41,6 +39,7 @@ public class Viaje {
         result.put("fecha", fecha);
         result.put("estado", estado);
         result.put("informacion", informacion);
+        result.put("conductor", conductor);
 
         return result;
     }
@@ -117,17 +116,4 @@ public class Viaje {
         this.conductor = conductor;
     }
 
-    public String toString() {
-        return "Viaje{" +
-                "destino='" + destino + '\'' +
-                ", salida='" + salida + '\'' +
-                ", equipaje='" + equipaje + '\'' +
-                ", hora='" + hora + '\'' +
-                ", fecha='" + fecha + '\'' +
-                ", pasajeros=" + pasajeros +
-                ", estado='" + estado + '\'' +
-                ", informacion='" + informacion + '\'' +
-                ", conductor='" + conductor + '\'' +
-                '}';
-    }
 }

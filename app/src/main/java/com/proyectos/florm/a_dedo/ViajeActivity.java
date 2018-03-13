@@ -2,7 +2,9 @@ package com.proyectos.florm.a_dedo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,14 +35,11 @@ public class ViajeActivity extends AppCompatActivity
         implements View.OnClickListener {
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener authListener;
+    private String keyUser;
 
-    private EditText mDestinoField;
-    private EditText mSalidaField;
-    private Spinner mEquipajeSpinner;
-    private Spinner mCantPasajerosSpinner;
-    private EditText mHoraField;
-    private EditText mFechaField;
-    private EditText mInfoField;
+    private EditText mDestinoField, mSalidaField, mHoraField, mFechaField, mInfoField;
+    private Spinner mEquipajeSpinner, mCantPasajerosSpinner;
 
     private FloatingActionButton mSubmitButton;
 
@@ -81,9 +82,11 @@ public class ViajeActivity extends AppCompatActivity
         //Widget EditText donde se mostrara la fecha y hora obtenidas
         mFechaField = findViewById(R.id.et_mostrar_fecha_picker);
         mHoraField = findViewById(R.id.et_mostrar_hora_picker);
+
         //Widget ImageButton del cual usaremos el evento clic para obtener la fecha y hora
         ibObtenerFecha = (ImageButton) findViewById(R.id.ib_obtener_fecha);
         ibObtenerHora = (ImageButton) findViewById(R.id.ib_obtener_hora);
+
         //Evento setOnClickListener - clic
         ibObtenerFecha.setOnClickListener(this);
         ibObtenerHora.setOnClickListener(this);
@@ -111,7 +114,7 @@ public class ViajeActivity extends AppCompatActivity
     private void createViaje(String destino, String salida, String hora,
                              String fecha, String equipaje, Integer pasajeros, String estado, String informacion) {
         String key = mDatabase.child("viajes").push().getKey();
-        Viaje viaje = new Viaje(destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
+        Viaje viaje = new Viaje("clave",destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
 
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
