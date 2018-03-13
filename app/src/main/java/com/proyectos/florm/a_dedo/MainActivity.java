@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     oldEmail.setError("Enter email");
                     progressBar.setVisibility(View.GONE);
                 }
+                
             }
         });
 
