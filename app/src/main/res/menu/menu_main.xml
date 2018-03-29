@@ -3,20 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.proyectos.florm.a_dedo.MainActivity">
 
-    <item android:id="@+id/MnuOpc1" android:title="Opcion1"
+    <item android:id="@+id/menu_crear_viaje" android:title="Crear Viaje"
         android:icon="@android:drawable/ic_menu_add"
+        android:iconTint="@color/white"
         app:showAsAction="ifRoom|withText" />
 
-    <item android:id="@+id/menu_eliminar_cuenta" android:title="Eliminar cuenta"
+    <item android:id="@+id/menu_configuracion" android:title="Configuración y privacidad"
         android:orderInCategory="100"
         app:showAsAction="withText"/>
 
     <item android:id="@+id/menu_cerrar_sesion" android:title="Cerrar sesion"
         app:showAsAction="withText"/>
 
-    <item android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
-        app:showAsAction="never" />
 </menu>

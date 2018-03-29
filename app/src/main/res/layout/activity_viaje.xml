@@ -14,13 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/lytContenedor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="55dp"
         android:orientation="vertical">
 
-
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <AutoCompleteTextView
                 android:id="@+id/field_destino"
                 android:layout_width="match_parent"
@@ -28,11 +35,11 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="55dp"
                 android:hint="Destino"
                 android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
 
-                <AutoCompleteTextView
+            <AutoCompleteTextView
                     android:id="@+id/field_salida"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,82 +49,152 @@
                     android:layout_marginRight="16dp"
                     android:hint="Salida"
                     android:maxLines="1" />
-        <include
-            layout="@layout/activity_pickers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/textEquipaje"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:hint="Equipaje"
-                android:text="Equipaje"
-                android:theme="@style/AppTheme" />
-
-            <Spinner
-                android:id="@+id/spinner_equipaje"
+            <include
+                layout="@layout/activity_pickers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Lugar equipaje" />
-        </LinearLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/textLugaresDisp"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:hint="Lugares disponibles"
-                android:text="Lugares disponibles" />
-
-            <Spinner
-                android:id="@+id/spinner_pasajeros"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Lugares disponibles"/>
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <EditText
+                    android:id="@+id/textEquipaje"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="Equipaje"
+                    android:text="Equipaje"
+                    android:theme="@style/AppTheme" />
 
-        <EditText
-            android:id="@+id/field_info_adicional"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:hint="Informacion adicional"
-            android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:scrollHorizontally="false" />
+                <Spinner
+                    android:id="@+id/spinner_equipaje"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lugar equipaje" />
+            </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_submit_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_input_add"/>
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/textLugaresDisp"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="Lugares disponibles"
+                    android:text="Lugares disponibles" />
+
+                <Spinner
+                    android:id="@+id/spinner_pasajeros"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lugares disponibles"/>
+
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/tel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="55dp"
+                    android:ems="10"
+                    android:layout_weight="1"
+                    android:hint="Telefono"
+                    android:textColor="@android:color/darker_gray"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:inputType="phone"/>
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/direccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="55dp"
+                    android:hint="Direccion"
+                    android:inputType="textNoSuggestions"
+                    android:textColor="@android:color/darker_gray"
+                    android:textColorHint="@android:color/darker_gray" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/localidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="55dp"
+                    android:hint="Localidad"
+                    android:inputType="textNoSuggestions"
+                    android:textColor="@android:color/darker_gray"
+                    android:textColorHint="@android:color/darker_gray" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/field_info_adicional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:hint="Informacion adicional"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
+                    android:scrollHorizontally="false" />
+            </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_input_add"/>
+
     </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
 
 </android.support.v4.widget.DrawerLayout>
 

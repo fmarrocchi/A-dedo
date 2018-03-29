@@ -44,10 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.password);
         inputNombre = (EditText) findViewById(R.id.nombre);
         inputApellido = (EditText) findViewById(R.id.apellido);
-        inputDireccion = (EditText) findViewById(R.id.direccion);
-        inputLocalidad = (EditText) findViewById(R.id.localidad);
         inputFoto = (EditText) findViewById(R.id.foto);
-        inputTel = (EditText) findViewById(R.id.tel);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -99,7 +96,28 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
-                //create user
+
+
+                //-------------Crear nuevo User en la BD------------------
+                //Instanciacion de la base de datos
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                if (!URLUtil.isValidUrl(foto))
+                    foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
+
+                User user = new User(mail);
+                mDatabase.child("users").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
+                    //El segundo parametro es para recibir un mensaje si hubo error en el setValue
+                    public void onComplete(DatabaseError error, DatabaseReference ref) {
+                        if(error == null){
+                            Log.i("Success", "Creado con exito");
+                        }
+                        else{
+                            Log.e("Error", "Error: " + error.getMessage());
+                        }
+                    }
+                });
+                //create authentication
                 auth.createUserWithEmailAndPassword(mail, password)
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -118,27 +136,6 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
 
-                //-------------Crear nuevo User en la BD------------------
-                //Instanciacion de la base de datos
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-
-                if (!URLUtil.isValidUrl(foto))
-                    foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
-
-                User user = new User(nombre, apellido, direccion, localidad, foto, mail, tel);
-                String key ="clave";
-
-                mDatabase.child("users").child(tel).setValue(user, new DatabaseReference.CompletionListener(){
-                    //El segundo parametro es para recibir un mensaje si hubo error en el setValue
-                    public void onComplete(DatabaseError error, DatabaseReference ref) {
-                        if(error == null){
-                            Log.i("Success", "Creado con exito");
-                        }
-                        else{
-                            Log.e("Error", "Error: " + error.getMessage());
-                        }
-                    }
-                });
             }
         });
     }

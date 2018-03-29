@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 
-public class ListarViajesActivity extends AppCompatActivity {
+public class ListarViajesActivity extends BaseActivity {
 
     private FirebaseRecyclerAdapter mAdapter;
     private RecyclerView recycler;
@@ -62,7 +62,6 @@ public class ListarViajesActivity extends AppCompatActivity {
                     }
                 };
         recycler.setAdapter(mAdapter);
-
     }
 
     protected void onDestroy() {

@@ -3,43 +3,36 @@ package com.proyectos.florm.a_dedo;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import com.proyectos.florm.a_dedo.Models.User;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 import java.util.Calendar;
 
-public class ViajeActivity extends AppCompatActivity
+public class ViajeActivity extends BaseActivity
         implements View.OnClickListener {
 
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener authListener;
-    private String keyUser;
 
-    private EditText mDestinoField, mSalidaField, mHoraField, mFechaField, mInfoField;
-    private Spinner mEquipajeSpinner, mCantPasajerosSpinner;
+    //Variable para guardar mail identificador del usuario actual
+    private String usuario;
+
+    private EditText inputDestino, inputOrigen, inputInfo, inputTel, inputDireccion, inputLocalidad, inputHora, inputFecha;
+    private Spinner inputEquipajeSpinner, inputCantPasajerosSpinner;
 
     private FloatingActionButton mSubmitButton;
 
@@ -61,27 +54,32 @@ public class ViajeActivity extends AppCompatActivity
     final int minuto = c.get(Calendar.MINUTE);
 
     //Widgets para fecha y hora
-    ImageButton ibObtenerFecha;
-    ImageButton ibObtenerHora;
+    ImageButton ibObtenerFecha, ibObtenerHora;
 
     //Asocia variables del formulario para obtener los datos ingresados para crear un viaje
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viaje);
 
+        //Obtengo datos pasados de la actividad anterior
+        usuario = getIntent().getStringExtra("usuario");
+
         //Instanciacion de la base de datos
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //Variables formulario
-        mDestinoField = findViewById(R.id.field_destino);
-        mSalidaField = findViewById(R.id.field_salida);
-        mEquipajeSpinner = findViewById(R.id.spinner_equipaje);
-        mCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
-        mInfoField = findViewById(R.id.field_info_adicional);
+        inputDestino = findViewById(R.id.field_destino);
+        inputOrigen = findViewById(R.id.field_salida);
+        inputEquipajeSpinner = findViewById(R.id.spinner_equipaje);
+        inputCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
+        inputInfo = findViewById(R.id.field_info_adicional);
+        inputTel = (EditText) findViewById(R.id.tel);
+        inputDireccion = (EditText) findViewById(R.id.direccion);
+        inputLocalidad = (EditText) findViewById(R.id.localidad);
 
         //Widget EditText donde se mostrara la fecha y hora obtenidas
-        mFechaField = findViewById(R.id.et_mostrar_fecha_picker);
-        mHoraField = findViewById(R.id.et_mostrar_hora_picker);
+        inputFecha = findViewById(R.id.et_mostrar_fecha_picker);
+        inputHora = findViewById(R.id.et_mostrar_hora_picker);
 
         //Widget ImageButton del cual usaremos el evento clic para obtener la fecha y hora
         ibObtenerFecha = (ImageButton) findViewById(R.id.ib_obtener_fecha);
@@ -103,27 +101,30 @@ public class ViajeActivity extends AppCompatActivity
 
         //Boton de envio de formulario para crear un nuevo viaje
         mSubmitButton = findViewById(R.id.fab_submit_post);
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                submitPost();
-            }
-        });
+
     }
 
     //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de daos
-    private void createViaje(String destino, String salida, String hora,
+    private void createViaje(String tel, String direccion, String localidad, String conductor, String destino, String salida, String hora,
                              String fecha, String equipaje, Integer pasajeros, String estado, String informacion) {
         String key = mDatabase.child("viajes").push().getKey();
-        Viaje viaje = new Viaje("clave",destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
+        Viaje viaje = new Viaje(localidad, direccion, tel, conductor, destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
 
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error == null){
-                    //PONER MENSAJE
+                    //Agrego key de viaje a lista de viajes del conductor (usuario actual)
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference mDataBase = database.getReference().child("usuarios").child(usuario);
+
+                    Log.i("INFOOOOO", mDataBase.toString());
+
+                    //Creo con exito y vuelvo a la actividad anterior
+                    onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
                 }
                 else{
-                    // Log.e(LOGTAG, "Error: " + error.getMessage());
+                     Log.e("ERROR", "Error: " + error.getMessage());
                 }
             }
         });
@@ -131,32 +132,53 @@ public class ViajeActivity extends AppCompatActivity
 
     //Enviar formulario con datos del viaje a crear
     private void submitPost() {
-        final String destino = mDestinoField.getText().toString();
-        final String salida = mSalidaField.getText().toString();
-        final String hora = mHoraField.getText().toString();
-        final String fecha = mFechaField.getText().toString();
-        final String equipaje = mEquipajeSpinner.getSelectedItem().toString();
-        final Integer pasajeros = (Integer)mCantPasajerosSpinner.getSelectedItem();
-        String informacion = mInfoField.getText().toString();
+        final String destino = inputDestino.getText().toString();
+        final String salida = inputOrigen.getText().toString();
+        final String hora = inputHora.getText().toString();
+        final String fecha = inputFecha.getText().toString();
+        final String equipaje = inputEquipajeSpinner.getSelectedItem().toString();
+        final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
+        final String tel = inputTel.getText().toString();
+        final String direccion = inputDireccion.getText().toString();
+        final String localidad = inputLocalidad.getText().toString();
+        String informacion = inputInfo.getText().toString();
 
         // Destino is required
         if (TextUtils.isEmpty(destino)) {
-            mDestinoField.setError(REQUIRED);
+            inputDestino.setError(REQUIRED);
             return;
         }
         // Salida is required
         if (TextUtils.isEmpty(salida)) {
-            mSalidaField.setError(REQUIRED);
+            inputOrigen.setError(REQUIRED);
             return;
         }
         // Hora is required
         if (TextUtils.isEmpty(hora)) {
-            mHoraField.setError(REQUIRED);
+            inputHora.setError(REQUIRED);
             return;
         }
         // Fecha is required
         if (TextUtils.isEmpty(fecha)) {
-            mFechaField.setError(REQUIRED);
+            inputFecha.setError(REQUIRED);
+            return;
+        }
+
+        // Tel is required
+        if (TextUtils.isEmpty(tel)) {
+            inputTel.setError(REQUIRED);
+            return;
+        }
+
+        // Direccion is required
+        if (TextUtils.isEmpty(direccion)) {
+            inputDireccion.setError(REQUIRED);
+            return;
+        }
+
+        //Localidad is required
+        if (TextUtils.isEmpty(localidad)) {
+            inputLocalidad.setError(REQUIRED);
             return;
         }
 
@@ -170,25 +192,21 @@ public class ViajeActivity extends AppCompatActivity
         Toast.makeText(this, "Creando...", Toast.LENGTH_SHORT).show();
 
         // Crear viaje
-        createViaje(destino, salida, hora, fecha, equipaje, pasajeros, "Activo", informacion);
+        createViaje(tel, direccion, localidad, usuario, destino, salida, hora, fecha, equipaje, pasajeros, "Activo", informacion);
 
         setEditingEnabled(true);
 
         Toast.makeText(this, "Viaje creado con exito", Toast.LENGTH_SHORT).show();
-
-       // finish(); //destruye la actividad y no se puede acceder a ella hasta volverla a crear
-        onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
-
     }
 
     private void setEditingEnabled(boolean enabled) {
-        mDestinoField.setEnabled(enabled);
-        mSalidaField.setEnabled(enabled);
-        mCantPasajerosSpinner.setEnabled(enabled);
-        mHoraField.setEnabled(enabled);
-        mFechaField.setEnabled(enabled);
-        mEquipajeSpinner.setEnabled(enabled);
-        mInfoField.setEnabled(enabled);
+        inputDestino.setEnabled(enabled);
+        inputOrigen.setEnabled(enabled);
+        inputCantPasajerosSpinner.setEnabled(enabled);
+        inputHora.setEnabled(enabled);
+        inputFecha.setEnabled(enabled);
+        inputEquipajeSpinner.setEnabled(enabled);
+        inputInfo.setEnabled(enabled);
 
         if (enabled) {
             mSubmitButton.setVisibility(View.VISIBLE);
@@ -202,9 +220,10 @@ public class ViajeActivity extends AppCompatActivity
         switch (v.getId()){
             case R.id.ib_obtener_fecha:
                 obtenerFecha();
-                break;
             case R.id.ib_obtener_hora:
                 obtenerHora();
+            case R.id.fab_submit_post:
+                submitPost();
                 break;
         }
     }
@@ -219,7 +238,7 @@ public class ViajeActivity extends AppCompatActivity
                 //Formateo el mes obtenido: antepone el 0 si son menores de 10
                 String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
                 //Muestro la fecha con el formato deseado
-                mFechaField.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+                inputFecha.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
             }
         },anio, mes, dia);
         //Muestro el widget
@@ -241,7 +260,7 @@ public class ViajeActivity extends AppCompatActivity
                     AM_PM = "p.m.";
                 }
                 //Muestro la hora con el formato deseado
-                mHoraField.setText(horaFormateada + DOS_PUNTOS + minutoFormateado + " " + AM_PM);
+                inputHora.setText(horaFormateada + DOS_PUNTOS + minutoFormateado + " " + AM_PM);
             }
         }, hora, minuto, false);
 

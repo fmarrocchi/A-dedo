@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "485616404476-edri2eu65qahs6q6rogoclb9vj3e0ok0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.proyectos.florm.a_dedo",
+            "certificate_hash": "f2da3d7eece4af76505f531fd680af996c74d176"
+          }
+        },
+        {
           "client_id": "485616404476-p4jq6gbg25l96aj1sfimltb336m66aq3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485616404476-p4jq6gbg25l96aj1sfimltb336m66aq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

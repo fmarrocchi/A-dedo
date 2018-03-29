@@ -13,12 +13,18 @@ public class Viaje {
     private String estado; //activo- completo - terminado
     private String informacion;
     private String conductor;
-
+    private String direccion;
+    private String localidad;
+    private String tel;
 
     //Constructor por defecto
     public Viaje(){ }
 
-    public Viaje(String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+    public Viaje(String loc, String dir, String telefono, String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+        conductor = cond;
+        localidad = loc;
+        direccion = dir;
+        tel = telefono;
         destino = des;
         salida = sal;
         pasajeros = pas;
@@ -26,22 +32,31 @@ public class Viaje {
         hora = hs;
         fecha = f;
         estado = est;
-        conductor = cond;
+        informacion = info;
     }
 
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("salida", salida);
-        result.put("destino", destino);
-        result.put("pasajeros", pasajeros);
-        result.put("equipaje", equipaje);
-        result.put("hora", hora);
-        result.put("fecha", fecha);
-        result.put("estado", estado);
-        result.put("informacion", informacion);
-        result.put("conductor", conductor);
+    public String getDireccion() {
+        return direccion;
+    }
 
-        return result;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public String getDestino() {
