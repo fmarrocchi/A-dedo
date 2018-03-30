@@ -23,17 +23,16 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_height="39dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <ImageView
-            android:id="@+id/gif_encabezado"
+            android:id="@+id/encabezado"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/encabezado2" />
+            app:srcCompat="@drawable/fotoviaje" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
