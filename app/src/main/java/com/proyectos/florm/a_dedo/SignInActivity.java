@@ -122,9 +122,9 @@ public class SignInActivity extends BaseActivity implements
                             } else {
                                 Toast.makeText(SignInActivity.this, "Autenticación fallida, revise su correo electrónico y contraseña o regístrese", Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                            startActivity(intent);
+                        }else {
+                       //     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                       //     startActivity(intent);
                             finish();
                         }
                     }
@@ -165,7 +165,7 @@ public class SignInActivity extends BaseActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Sign In GOOGLE", "Sign In Con credenciales GOOGLE: exitoso");
                             FirebaseUser user = auth.getCurrentUser();
-                            createUser(user);
+                            //createUser(user);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -181,7 +181,7 @@ public class SignInActivity extends BaseActivity implements
     private void updateUI(FirebaseUser user){
         hideProgressDialog();
         if (user != null) {
-            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+           // startActivity(new Intent(SignInActivity.this, MainActivity.class));
             finish();
         }
     }
@@ -190,7 +190,7 @@ public class SignInActivity extends BaseActivity implements
         //Instanciacion de la base de datos
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         String mail = googleUser.getEmail();
-        User user = new User(mail);
+        /*User user = new User(mail);
         mDatabase.child("users").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
@@ -201,7 +201,7 @@ public class SignInActivity extends BaseActivity implements
                     Log.e("Error", "Error: " + error.getMessage());
                 }
             }
-        });
+        });*/
     }
 }
 

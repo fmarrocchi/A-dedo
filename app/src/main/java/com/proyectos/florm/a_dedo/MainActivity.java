@@ -92,6 +92,7 @@ public class MainActivity extends BaseActivity
         if(mGoogleSignInClient!=null){
             mGoogleSignInClient.signOut();
         }
+
     }
 
     protected void onResume() {
@@ -108,7 +109,6 @@ public class MainActivity extends BaseActivity
         } else {
             //Si no esta logueado voy a la actividad de login
             startActivity(new Intent(MainActivity.this, SignInActivity.class));
-            finish();
         }
     }
 
