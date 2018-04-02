@@ -1,6 +1,7 @@
 package com.proyectos.florm.a_dedo;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.User;
 import com.google.firebase.database.FirebaseDatabase;
+import com.proyectos.florm.a_dedo.Models.Viaje;
 
 import android.support.design.widget.Snackbar;
 
@@ -165,7 +167,7 @@ public class SignInActivity extends BaseActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Sign In GOOGLE", "Sign In Con credenciales GOOGLE: exitoso");
                             FirebaseUser user = auth.getCurrentUser();
-                            //createUser(user);
+                            createUser(user);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -181,7 +183,6 @@ public class SignInActivity extends BaseActivity implements
     private void updateUI(FirebaseUser user){
         hideProgressDialog();
         if (user != null) {
-           // startActivity(new Intent(SignInActivity.this, MainActivity.class));
             finish();
         }
     }
@@ -190,18 +191,23 @@ public class SignInActivity extends BaseActivity implements
         //Instanciacion de la base de datos
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         String mail = googleUser.getEmail();
-        /*User user = new User(mail);
-        mDatabase.child("users").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
+        String foto = googleUser.getPhotoUrl().toString();
+        String nombre = googleUser.getDisplayName();
+        String telefono = googleUser.getPhoneNumber();
+        User user = new User(mail, nombre, telefono, foto);
+
+        String key = mDatabase.child("viajes").push().getKey();
+        mDatabase.child("usuarios").child(key).setValue(user, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error == null){
-                    Log.i("Success", "Creado con exito");
+                    Log.i("Success", "Usuario creado con exito");
                 }
                 else{
-                    Log.e("Error", "Error: " + error.getMessage());
+                    Log.e("Error", "Error al crear usuario: " + error.getMessage());
                 }
             }
-        });*/
+        });
     }
 }
 

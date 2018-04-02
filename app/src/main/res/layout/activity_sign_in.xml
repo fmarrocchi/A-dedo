@@ -26,7 +26,7 @@
             android:layout_centerHorizontal="true"
             android:paddingTop="20dp"
             android:scaleType="center"
-            android:src="@drawable/mapa2" />
+            android:src="@drawable/mapa" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,16 +40,16 @@
                 android:fontFamily="casual"
                 android:text="a"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="40dp"
+                android:textSize="50dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:fontFamily="casual"
                 android:text="dedo"
                 android:textColor="@color/colorPrimary"
-                android:textSize="40dp"
+                android:textSize="50dp"
                 android:textStyle="bold" />
         </LinearLayout>
 

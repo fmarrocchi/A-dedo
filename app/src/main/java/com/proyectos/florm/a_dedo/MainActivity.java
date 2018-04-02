@@ -42,10 +42,6 @@ public class MainActivity extends BaseActivity
     private TabLayout tabLayout;
     private TabItem tabItemInicio, tabItemMisViajes;
 
-    //Variables para acceder a la BD
-    private FirebaseRecyclerAdapter mAdapter;
-    private RecyclerView recycler;
-
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBaseViajes = database.getReference().child("viajes");
 
@@ -58,23 +54,9 @@ public class MainActivity extends BaseActivity
 
         findViewById(R.id.buttonListarViajes).setOnClickListener(this);
         findViewById(R.id.buttonVerPerfil).setOnClickListener(this);
-/*
-        //Mica: ESTOY HACIENDO ESTO JAJA COMENTE PQ NO ANDA TODAVIA
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new PagerAdapter(
-                getSupportFragmentManager()));
-
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.setupWithViewPager(viewPager);
-*/
         tabItemInicio = (TabItem) findViewById(R.id.tab_item_inicio);
         tabItemMisViajes = (TabItem) findViewById(R.id.tab_item_misviajes);
-
-        recycler = (RecyclerView) findViewById(R.id.listaViajes);
-        recycler.setOnClickListener(this);
-        recycler.setVisibility(View.GONE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,7 +64,6 @@ public class MainActivity extends BaseActivity
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
-
     }
 
     //sign out method
@@ -92,7 +73,7 @@ public class MainActivity extends BaseActivity
         if(mGoogleSignInClient!=null){
             mGoogleSignInClient.signOut();
         }
-
+        startActivity(getIntent()); //refrescar
     }
 
     protected void onResume() {
@@ -131,7 +112,7 @@ public class MainActivity extends BaseActivity
               case R.id.menu_crear_viaje:
                 //Creamos el Intent de la clase viajes, pasando como dato el mail del usuario autenticado
                 Intent intent = new Intent(MainActivity.this, ViajeActivity.class);
-                intent.putExtra("usuario", user.getEmail().toString());
+                intent.putExtra("usuario", user.getUid().toString());
                 //Iniciamos la nueva actividad
                 startActivity(intent);
                 return true;
@@ -166,32 +147,10 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.tab_item_inicio:
                 txtTitulo.setText("Inicio");
-                mostrarViajes();
                 break;
             case R.id.tab_item_misviajes:
                 txtTitulo.setText("Mis viajes");
         }
     }
 
-    private void mostrarViajes(){
-
-        //Inicialización RecyclerView
-        recycler.setVisibility(View.VISIBLE);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-
-        mAdapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(
-                        Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBaseViajes) {
-
-                    public void populateViewHolder(ViajeViewHolder viajeViewHolder, Viaje viaje, int position) {
-                        viajeViewHolder.setDestino(viaje.getDestino()+ " - ");
-                        viajeViewHolder.setSalida(viaje.getSalida());
-                        viajeViewHolder.setFecha(viaje.getFecha());
-                        viajeViewHolder.setHora(viaje.getHora()+ " hs");
-                        viajeViewHolder.setPasajeros(viaje.getPasajeros().toString());
-                    }
-                };
-        recycler.setAdapter(mAdapter);
-    }
 }

@@ -1,42 +1,53 @@
 package com.proyectos.florm.a_dedo.Holders;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.R;
 
 
-    public class ViajeViewHolder extends RecyclerView.ViewHolder {
+    public class ViajeViewHolder extends RecyclerView.ViewHolder{
         private View view;
-
-        //Variables viaje
-        TextView lblDestino;
-        TextView lblSalida;
-        TextView lblFecha;
-        TextView lblHora;
-        TextView lblPasajeros;
-        TextView lblEquipaje;
-        TextView lblInformacion;
+        private Button botonSuscribir;
+        private TextView nombre, tel, foto, info;
+        private Boolean visible;
 
         public ViajeViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-         }
+            botonSuscribir = view.findViewById(R.id.btn_suscribir);
+            visible = false;
+        }
 
         public void setDestino(String destino) {
-            TextView field =  view.findViewById(R.id.lblDestino);
+            TextView field = view.findViewById(R.id.lblDestino);
             field.setText(destino);
         }
 
+        public Button getBotonSuscribir() {
+            return botonSuscribir;
+        }
+
+        public View getView() {
+            return view;
+        }
+
         public void setSalida(String salida) {
-            TextView field =  view.findViewById(R.id.lblSalida);
+            TextView field = view.findViewById(R.id.lblSalida);
             field.setText(salida);
         }
 
         public void setFecha(String fecha) {
-            TextView field =  view.findViewById(R.id.lblFecha);
+            TextView field = view.findViewById(R.id.lblFecha);
             field.setText(fecha);
         }
 
@@ -50,14 +61,59 @@ import com.proyectos.florm.a_dedo.R;
             field.setText(pasajeros);
         }
 
-        public void setEquipaje(String equipaje) {
-            TextView field = (TextView) view.findViewById(R.id.lblEquipaje);
-            field.setText(equipaje);
+        public void setInformacion(String informacion) {
+            info = (TextView) view.findViewById(R.id.lblInformacion);
+            info.setText(informacion);
+            info.setVisibility(View.GONE);
         }
 
-        public void setInformacion(String info) {
-            TextView field = (TextView) view.findViewById(R.id.lblInformacion);
-            field.setText(info);
+        public void setDatosConductor(String conductor) {
+            nombre = (TextView) view.findViewById(R.id.lblConductor);
+            nombre.setVisibility(View.GONE);
+            tel = (TextView) view.findViewById(R.id.lblTelefono);
+            tel.setVisibility(View.GONE);
+          //  foto = (TextView) view.findViewById(R.id.lblFoto);
+
+            //Instancia a la base de datos
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            //apuntamos al nodo que queremos leer
+            DatabaseReference myRef = database.getReference("usuarios/"+conductor);
+
+            //Agregamos un ValueEventListener para que los cambios que se hagan en la base de datos se reflejen en la aplicacion
+            myRef.addValueEventListener(new ValueEventListener() {
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //leeremos un objeto de tipo Usuario
+                    GenericTypeIndicator<User> u = new GenericTypeIndicator<User>() { };
+
+                    //User user = dataSnapshot.getValue(u);
+
+
+                    tel.setText(dataSnapshot.child("telefono").getValue().toString());
+                    nombre.setText(dataSnapshot.child("nombre").getValue().toString());
+                    // foto.setText(mDataBase.child(conductor).child("foto").toString());
+
+                }
+
+                public void onCancelled(DatabaseError error) {
+                    Log.e("ERROR FIREBASE", error.getMessage());
+                }
+            });
+        }
+
+        public void masInfo(){
+            if (visible) {
+                nombre.setVisibility(View.GONE);
+                tel.setVisibility(View.GONE);
+                info.setVisibility(View.GONE);
+                visible = false;
+            }
+            else{
+                nombre.setVisibility(View.VISIBLE);
+                tel.setVisibility(View.VISIBLE);
+                info.setVisibility(View.VISIBLE);
+                visible = true;
+            }
+
         }
     }
 

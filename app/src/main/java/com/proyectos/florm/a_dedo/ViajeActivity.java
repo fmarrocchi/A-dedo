@@ -6,11 +6,13 @@ import android.content.Intent;
 import com.proyectos.florm.a_dedo.Models.User;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,7 +36,7 @@ public class ViajeActivity extends BaseActivity
     private EditText inputDestino, inputOrigen, inputInfo, inputTel, inputDireccion, inputLocalidad, inputHora, inputFecha;
     private Spinner inputEquipajeSpinner, inputCantPasajerosSpinner;
 
-    private FloatingActionButton mSubmitButton;
+    private Button mSubmitButton;
 
     private static final String REQUIRED = "Required";
     private static final String CERO = "0";
@@ -73,9 +75,7 @@ public class ViajeActivity extends BaseActivity
         inputEquipajeSpinner = findViewById(R.id.spinner_equipaje);
         inputCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
         inputInfo = findViewById(R.id.field_info_adicional);
-        inputTel = (EditText) findViewById(R.id.tel);
         inputDireccion = (EditText) findViewById(R.id.direccion);
-        inputLocalidad = (EditText) findViewById(R.id.localidad);
 
         //Widget EditText donde se mostrara la fecha y hora obtenidas
         inputFecha = findViewById(R.id.et_mostrar_fecha_picker);
@@ -96,35 +96,30 @@ public class ViajeActivity extends BaseActivity
 
         //Crear spinner con los datos posibles para CantPasajeros
         Spinner mCantPasajerosSpinner = (Spinner) findViewById(R.id.spinner_pasajeros);
-        Integer[] cantPasajeros = {0, 1, 2, 3, 4, 5};
+        Integer[] cantPasajeros = {1, 2, 3, 4};
         mCantPasajerosSpinner.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, cantPasajeros));
 
         //Boton de envio de formulario para crear un nuevo viaje
-        mSubmitButton = findViewById(R.id.fab_submit_post);
-
+        mSubmitButton = findViewById(R.id.submit_post);
     }
 
-    //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de daos
-    private void createViaje(String tel, String direccion, String localidad, String conductor, String destino, String salida, String hora,
+    //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de datos
+    private void createViaje(String direccion, String conductor, String destino, String salida, String hora,
                              String fecha, String equipaje, Integer pasajeros, String estado, String informacion) {
         String key = mDatabase.child("viajes").push().getKey();
-        Viaje viaje = new Viaje(localidad, direccion, tel, conductor, destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
+        Viaje viaje = new Viaje(direccion, conductor, destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
 
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error == null){
-                    //Agrego key de viaje a lista de viajes del conductor (usuario actual)
-                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference mDataBase = database.getReference().child("usuarios").child(usuario);
-
-                    Log.i("INFOOOOO", mDataBase.toString());
-
+                    Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_SHORT).show();
                     //Creo con exito y vuelvo a la actividad anterior
                     onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
                 }
                 else{
-                     Log.e("ERROR", "Error: " + error.getMessage());
+                    Snackbar.make(findViewById(R.id.drawer_layout), "No se pudo crear viaje!", Snackbar.LENGTH_SHORT).show();
+                    Log.e("ERROR", "Error: " + error.getMessage());
                 }
             }
         });
@@ -138,9 +133,7 @@ public class ViajeActivity extends BaseActivity
         final String fecha = inputFecha.getText().toString();
         final String equipaje = inputEquipajeSpinner.getSelectedItem().toString();
         final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
-        final String tel = inputTel.getText().toString();
         final String direccion = inputDireccion.getText().toString();
-        final String localidad = inputLocalidad.getText().toString();
         String informacion = inputInfo.getText().toString();
 
         // Destino is required
@@ -164,27 +157,15 @@ public class ViajeActivity extends BaseActivity
             return;
         }
 
-        // Tel is required
-        if (TextUtils.isEmpty(tel)) {
-            inputTel.setError(REQUIRED);
-            return;
-        }
-
         // Direccion is required
         if (TextUtils.isEmpty(direccion)) {
             inputDireccion.setError(REQUIRED);
             return;
         }
 
-        //Localidad is required
-        if (TextUtils.isEmpty(localidad)) {
-            inputLocalidad.setError(REQUIRED);
-            return;
-        }
-
         //Si no hay informacion extra le asigno un guion (no es campo requerido)
         if (TextUtils.isEmpty(informacion)) {
-           informacion = "-";
+           informacion = " No hay información adicional.";
         }
 
         // Deshabilitar el boton para que no se cree mas de una vez
@@ -192,7 +173,7 @@ public class ViajeActivity extends BaseActivity
         Toast.makeText(this, "Creando...", Toast.LENGTH_SHORT).show();
 
         // Crear viaje
-        createViaje(tel, direccion, localidad, usuario, destino, salida, hora, fecha, equipaje, pasajeros, "Activo", informacion);
+        createViaje(direccion, usuario, destino, salida, hora, fecha, equipaje, pasajeros, "Activo", informacion);
 
         setEditingEnabled(true);
 
@@ -207,7 +188,6 @@ public class ViajeActivity extends BaseActivity
         inputFecha.setEnabled(enabled);
         inputEquipajeSpinner.setEnabled(enabled);
         inputInfo.setEnabled(enabled);
-
         if (enabled) {
             mSubmitButton.setVisibility(View.VISIBLE);
         } else {
@@ -222,7 +202,7 @@ public class ViajeActivity extends BaseActivity
                 obtenerFecha();
             case R.id.ib_obtener_hora:
                 obtenerHora();
-            case R.id.fab_submit_post:
+            case R.id.submit_post:
                 submitPost();
                 break;
         }

@@ -105,8 +105,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (!URLUtil.isValidUrl(foto))
                     foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
 
-                User user = new User(mail);
-                mDatabase.child("users").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
+                User user = new User(mail, nombre+" "+apellido, tel, foto);
+                mDatabase.child("usuarios").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
                     //El segundo parametro es para recibir un mensaje si hubo error en el setValue
                     public void onComplete(DatabaseError error, DatabaseReference ref) {
                         if(error == null){

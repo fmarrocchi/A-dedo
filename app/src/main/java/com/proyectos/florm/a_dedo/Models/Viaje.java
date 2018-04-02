@@ -1,6 +1,8 @@
 package com.proyectos.florm.a_dedo.Models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Viaje {
@@ -10,29 +12,31 @@ public class Viaje {
     private String hora;
     private String fecha;
     private Integer pasajeros;
-    private String estado; //activo- completo - terminado
     private String informacion;
     private String conductor;
     private String direccion;
-    private String localidad;
-    private String tel;
+    private List<String> suscriptos;
 
-    //Constructor por defecto
     public Viaje(){ }
 
-    public Viaje(String loc, String dir, String telefono, String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+    public Viaje(String dir, String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+        suscriptos = new ArrayList<String>();
         conductor = cond;
-        localidad = loc;
         direccion = dir;
-        tel = telefono;
         destino = des;
         salida = sal;
         pasajeros = pas;
-        equipaje = eq;
         hora = hs;
         fecha = f;
-        estado = est;
         informacion = info;
+    }
+
+    public List<String> getSuscriptos() {
+        return suscriptos;
+    }
+
+    public void setSuscriptos(List<String> suscriptos) {
+        this.suscriptos = suscriptos;
     }
 
     public String getDireccion() {
@@ -43,32 +47,12 @@ public class Viaje {
         this.direccion = direccion;
     }
 
-    public String getLocalidad() {
-        return localidad;
-    }
-
-    public void setLocalidad(String localidad) {
-        this.localidad = localidad;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
     public String getDestino() {
         return destino;
     }
 
     public String getSalida() {
         return salida;
-    }
-
-    public String getEquipaje() {
-        return equipaje;
     }
 
     public String getHora() {
@@ -81,10 +65,6 @@ public class Viaje {
 
     public Integer getPasajeros() {
         return pasajeros;
-    }
-
-    public String getEstado() {
-        return estado;
     }
 
     public String getInformacion() {
@@ -103,10 +83,6 @@ public class Viaje {
         this.salida = salida;
     }
 
-    public void setEquipaje(String equipaje) {
-        this.equipaje = equipaje;
-    }
-
     public void setHora(String hora) {
         this.hora = hora;
     }
@@ -119,16 +95,27 @@ public class Viaje {
         this.pasajeros = pasajeros;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
     public void setInformacion(String informacion) {
         this.informacion = informacion;
     }
 
     public void setConductor(String conductor) {
         this.conductor = conductor;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("destino", destino);
+        result.put("salida", salida);
+        result.put("hora", hora);
+        result.put("fecha", fecha);
+        result.put("pasajeros", pasajeros);
+        result.put("informacion", informacion);
+        result.put("conductor", conductor);
+        result.put("direccion", direccion);
+        result.put("suscriptos", suscriptos);
+
+        return result;
     }
 
 }

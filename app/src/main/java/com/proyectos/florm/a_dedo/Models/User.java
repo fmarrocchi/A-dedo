@@ -6,16 +6,18 @@ import java.util.List;
 public class User {
 
     private String mail;
-    private List<Viaje> viajes;
-    private List<Viaje> viajesSuscriptos;
+    private String nombre;
+    private String telefono;
+    private String foto;
 
     public User() {
     }
 
-    public User(String mail) {
+    public User(String mail, String nombre, String telefono, String foto) {
         this.mail = mail;
-        viajes = new ArrayList<Viaje>();
-        viajesSuscriptos = new ArrayList<Viaje>();
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.foto = foto;
     }
 
     public String getMail() {
@@ -26,20 +28,27 @@ public class User {
         this.mail = mail;
     }
 
-    public List<Viaje> getViajes() {
-        return viajes;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setViajes(List<Viaje> viajes) {
-        this.viajes = viajes;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public List<Viaje> getViajesSuscriptos() {
-        return viajesSuscriptos;
+    public String getTelefono() {
+        return telefono;
     }
 
-   public void setViajesSuscriptos(List<Viaje> viajesSuscriptos) {
-        this.viajesSuscriptos = viajesSuscriptos;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 }
