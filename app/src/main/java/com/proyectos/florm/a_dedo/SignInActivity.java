@@ -56,14 +56,19 @@ public class SignInActivity extends BaseActivity implements
 
         //Vistas
         inputEmail = (EditText) findViewById(R.id.email);
+        inputEmail.setAlpha(0.75f);
         inputPassword = (EditText) findViewById(R.id.password);
+        inputPassword.setAlpha(0.75f);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         //Listeners de botones
         findViewById(R.id.btn_signup).setOnClickListener(this);
         findViewById(R.id.btn_login).setOnClickListener(this);
         findViewById(R.id.btn_reset_password).setOnClickListener(this);
-        findViewById(R.id.sign_in_google_button).setOnClickListener(this);
+        btnSignInGoogle = (SignInButton) findViewById(R.id.sign_in_google_button);
+        btnSignInGoogle.setOnClickListener(this);
+        btnSignInGoogle.setAlpha(0.65f);
 
         //Configurar Sign In con Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -196,11 +201,12 @@ public class SignInActivity extends BaseActivity implements
         String telefono = googleUser.getPhoneNumber();
         User user = new User(mail, nombre, telefono, foto);
 
-        String key = mDatabase.child("viajes").push().getKey();
+        //Uso mismo id de auth para el usuario
+        String key = googleUser.getUid();
         mDatabase.child("usuarios").child(key).setValue(user, new DatabaseReference.CompletionListener(){
-            //El segundo parametro es para recibir un mensaje si hubo error en el setValue
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if(error == null){
+                    //El segundo parametro es para recibir un mensaje si hubo error en el setValue
+                    public void onComplete(DatabaseError error, DatabaseReference ref) {
+                        if(error == null){
                     Log.i("Success", "Usuario creado con exito");
                 }
                 else{

@@ -87,9 +87,8 @@ import com.proyectos.florm.a_dedo.R;
 
                     //User user = dataSnapshot.getValue(u);
 
-
-                    tel.setText(dataSnapshot.child("telefono").getValue().toString());
                     nombre.setText(dataSnapshot.child("nombre").getValue().toString());
+                    tel.setText(dataSnapshot.child("telefono").getValue().toString());
                     // foto.setText(mDataBase.child(conductor).child("foto").toString());
 
                 }

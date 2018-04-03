@@ -2,23 +2,19 @@ package com.proyectos.florm.a_dedo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
-import com.proyectos.florm.a_dedo.Models.User;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,6 +28,8 @@ public class ViajeActivity extends BaseActivity
 
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
+
+    private ProgressBar progressBar;
 
     private EditText inputDestino, inputOrigen, inputInfo, inputTel, inputDireccion, inputLocalidad, inputHora, inputFecha;
     private Spinner inputEquipajeSpinner, inputCantPasajerosSpinner;
@@ -89,6 +87,8 @@ public class ViajeActivity extends BaseActivity
         ibObtenerFecha.setOnClickListener(this);
         ibObtenerHora.setOnClickListener(this);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         //Crear spinner con los datos posibles para equipaje
         Spinner mEquipajeSpinner = (Spinner) findViewById(R.id.spinner_equipaje);
         String[] equipaje = {"Si", "No"};
@@ -108,13 +108,13 @@ public class ViajeActivity extends BaseActivity
                              String fecha, String equipaje, Integer pasajeros, String estado, String informacion) {
         String key = mDatabase.child("viajes").push().getKey();
         Viaje viaje = new Viaje(direccion, conductor, destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
-
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error == null){
                     Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_SHORT).show();
                     //Creo con exito y vuelvo a la actividad anterior
+                    progressBar.setVisibility(View.GONE);
                     onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
                 }
                 else{
@@ -128,7 +128,7 @@ public class ViajeActivity extends BaseActivity
     //Enviar formulario con datos del viaje a crear
     private void submitPost() {
         final String destino = inputDestino.getText().toString();
-        final String salida = inputOrigen.getText().toString();
+        final String origen = inputOrigen.getText().toString();
         final String hora = inputHora.getText().toString();
         final String fecha = inputFecha.getText().toString();
         final String equipaje = inputEquipajeSpinner.getSelectedItem().toString();
@@ -142,7 +142,7 @@ public class ViajeActivity extends BaseActivity
             return;
         }
         // Salida is required
-        if (TextUtils.isEmpty(salida)) {
+        if (TextUtils.isEmpty(origen)) {
             inputOrigen.setError(REQUIRED);
             return;
         }
@@ -170,14 +170,11 @@ public class ViajeActivity extends BaseActivity
 
         // Deshabilitar el boton para que no se cree mas de una vez
         setEditingEnabled(false);
-        Toast.makeText(this, "Creando...", Toast.LENGTH_SHORT).show();
 
-        // Crear viaje
-        createViaje(direccion, usuario, destino, salida, hora, fecha, equipaje, pasajeros, "Activo", informacion);
+        progressBar.setVisibility(View.VISIBLE);
 
+        createViaje(direccion, usuario, destino, origen, hora, fecha, equipaje, pasajeros, "Activo", informacion);
         setEditingEnabled(true);
-
-        Toast.makeText(this, "Viaje creado con exito", Toast.LENGTH_SHORT).show();
     }
 
     private void setEditingEnabled(boolean enabled) {
@@ -246,5 +243,4 @@ public class ViajeActivity extends BaseActivity
 
             recogerHora.show();
     }
-
 }

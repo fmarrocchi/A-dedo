@@ -1,8 +1,13 @@
 package com.proyectos.florm.a_dedo;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +27,8 @@ public class ListarViajesActivity extends BaseActivity {
 
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
+
+    static Integer eleccion;
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBase = database.getReference().child("viajes");
@@ -64,7 +71,6 @@ public class ListarViajesActivity extends BaseActivity {
 
                         viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                Log.i("ELEMENTO DE LA LISTA", "SELECCIONADO "+list_viaje_id);
                                 viajeViewHolder.masInfo();
                             }
                         });
@@ -77,11 +83,18 @@ public class ListarViajesActivity extends BaseActivity {
     public void suscribirUsuario(Viaje viaje, String key){
         int cantLugares = viaje.getPasajeros();
         if (cantLugares>0){
-            Snackbar.make(findViewById(R.id.listar_layout), "Suscripto!", Snackbar.LENGTH_SHORT).show();
+            DialogoSeleccionLugares dialogo = new DialogoSeleccionLugares();
+            dialogo.show(getFragmentManager(), "Seleccionar pasajeros");
+            Log.i("DIALOGO", "MOSTRADO");
+
+            //Inicializo variable
+            eleccion = 0;
+          //  Snackbar.make(findViewById(R.id.listar_layout), "Suscripto!", Snackbar.LENGTH_SHORT).show();
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser user = auth.getCurrentUser();
-            viaje.setPasajeros(cantLugares-1);
+
+            viaje.setPasajeros(cantLugares-eleccion);
             viaje.getSuscriptos().add(user.getEmail());
 
             Map<String, Object> viajeNuevo = viaje.toMap();
@@ -110,4 +123,40 @@ public class ListarViajesActivity extends BaseActivity {
             startActivity(new Intent(ListarViajesActivity.this, SignInActivity.class));
         }
     }
+
+    //Clase para Dialogo para seleccionar cantidad de lugares a reservar
+    public static class DialogoSeleccionLugares extends DialogFragment{
+
+        public Dialog onCreateDialog(Bundle savedInstanceState, int cant) {
+
+            //Opciones de dialogo segun catidad de lugares disponibles
+            final String[] items = {};
+            for (int i = 1; i < cant; i++) {
+                items[i] = i+"";
+            }
+            Log.i("Opciones de dialogo", items.toString());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("¿Cuantos pasajeros son?")
+                    .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            Log.i("Dialogos", "Opción elegida: " + items[item]);
+                            eleccion = item;
+                        }
+                    })
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i("Dialogos", "Confirmacion Aceptada.");
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i("Dialogos", "Confirmacion Cancelada.");
+                            dialog.cancel();
+                        }
+                    });
+            return builder.create();
+        }
+    }
+
 }
