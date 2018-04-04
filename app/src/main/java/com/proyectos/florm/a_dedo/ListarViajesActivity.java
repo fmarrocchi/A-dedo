@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -28,15 +30,13 @@ public class ListarViajesActivity extends BaseActivity {
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
 
-    static Integer eleccion;
-
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBase = database.getReference().child("viajes");
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar_viajes);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mostrarViajes();
@@ -44,7 +44,7 @@ public class ListarViajesActivity extends BaseActivity {
 
     private void mostrarViajes(){
         //Inicialización RecyclerView
-        recycler = (RecyclerView) findViewById(R.id.listaViajes);
+        recycler = findViewById(R.id.listaViajes);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -80,32 +80,72 @@ public class ListarViajesActivity extends BaseActivity {
         recycler.setAdapter(adapter);
     }
 
-    public void suscribirUsuario(Viaje viaje, String key){
-        int cantLugares = viaje.getPasajeros();
-        if (cantLugares>0){
-            DialogoSeleccionLugares dialogo = new DialogoSeleccionLugares();
-            dialogo.show(getFragmentManager(), "Seleccionar pasajeros");
-            Log.i("DIALOGO", "MOSTRADO");
+    public void suscribirUsuario(Viaje v, String k){
+        final int cantLugares = v.getPasajeros();
+        final Viaje viaje =v;
+        final String key = k;
 
-            //Inicializo variable
-            eleccion = 0;
-          //  Snackbar.make(findViewById(R.id.listar_layout), "Suscripto!", Snackbar.LENGTH_SHORT).show();
+        //Opciones de dialogo segun catidad de lugares disponibles
+        final String[] items = {"1","2","3","4"};
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser user = auth.getCurrentUser();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+        builder.setTitle("¿Cuantos pasajeros son?")
+                .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        Log.i("Dialogos", "Opción elegida: " + items[item]);
+                        //a item le sumo 1 ya que comienza en 0
+                        int cant= item + 1;
 
-            viaje.setPasajeros(cantLugares-eleccion);
-            viaje.getSuscriptos().add(user.getEmail());
+                        if (cantLugares>item){
+                            try {
+                                FirebaseAuth auth = FirebaseAuth.getInstance();
+                                FirebaseUser user = auth.getCurrentUser();
 
-            Map<String, Object> viajeNuevo = viaje.toMap();
+                                viaje.setPasajeros(cantLugares-cant);
+                                viaje.getSuscriptos().add(user.getEmail());
+                            } catch (NullPointerException e) {
+                                // Google Sign In failed, update UI appropriately
+                                Log.w("Suscripcion", "fallo ", e);
+                            }
 
-            Map<String, Object> childUpdates = new HashMap<>();
-            childUpdates.put("/" + key , viajeNuevo);
-            mDataBase.updateChildren(childUpdates);
-        }
-        else{
-            Snackbar.make(findViewById(R.id.listar_layout), "Viaje completo! No puede subscribirse", Snackbar.LENGTH_SHORT).show();
-        }
+
+                //--------Aca faltaria agregar cant de suscripciones a viaje al usuario---------
+
+                            Map<String, Object> viajeNuevo = viaje.toMap();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/" + key , viajeNuevo);
+                            mDataBase.updateChildren(childUpdates);
+
+                            Snackbar.make(findViewById(R.id.listar_layout), cant + " lugares reservados", Snackbar.LENGTH_INDEFINITE)
+                                    .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
+                                    .setAction("Aceptar", new View.OnClickListener() {
+                                        public void onClick(View view) {
+
+                                        }
+                                    })
+                            .show();
+                        }
+                        else{
+                            Snackbar.make(findViewById(R.id.listar_layout), "No hay suficientes lugares!", Snackbar.LENGTH_INDEFINITE)
+                                    .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
+                                    .setAction("Aceptar", new View.OnClickListener() {
+                                       public void onClick(View view) {
+
+                                        }
+                                    })
+                                    .show();
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.i("Dialogos", "Confirmacion Cancelada.");
+                        dialog.cancel();
+                    }
+                });
+            AlertDialog dialog = builder.create();
+            dialog.show();
     }
 
     protected void onDestroy() {
@@ -124,39 +164,5 @@ public class ListarViajesActivity extends BaseActivity {
         }
     }
 
-    //Clase para Dialogo para seleccionar cantidad de lugares a reservar
-    public static class DialogoSeleccionLugares extends DialogFragment{
-
-        public Dialog onCreateDialog(Bundle savedInstanceState, int cant) {
-
-            //Opciones de dialogo segun catidad de lugares disponibles
-            final String[] items = {};
-            for (int i = 1; i < cant; i++) {
-                items[i] = i+"";
-            }
-            Log.i("Opciones de dialogo", items.toString());
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("¿Cuantos pasajeros son?")
-                    .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            Log.i("Dialogos", "Opción elegida: " + items[item]);
-                            eleccion = item;
-                        }
-                    })
-                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Log.i("Dialogos", "Confirmacion Aceptada.");
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Log.i("Dialogos", "Confirmacion Cancelada.");
-                            dialog.cancel();
-                        }
-                    });
-            return builder.create();
-        }
-    }
 
 }

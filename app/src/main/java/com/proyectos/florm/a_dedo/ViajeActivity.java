@@ -25,15 +25,11 @@ public class ViajeActivity extends BaseActivity
         implements View.OnClickListener {
 
     private DatabaseReference mDatabase;
-
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
-
     private ProgressBar progressBar;
-
     private EditText inputDestino, inputOrigen, inputInfo, inputTel, inputDireccion, inputLocalidad, inputHora, inputFecha;
     private Spinner inputEquipajeSpinner, inputCantPasajerosSpinner;
-
     private Button mSubmitButton;
 
     private static final String REQUIRED = "Required";
@@ -73,15 +69,15 @@ public class ViajeActivity extends BaseActivity
         inputEquipajeSpinner = findViewById(R.id.spinner_equipaje);
         inputCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
         inputInfo = findViewById(R.id.field_info_adicional);
-        inputDireccion = (EditText) findViewById(R.id.direccion);
+        inputDireccion = findViewById(R.id.direccion);
 
         //Widget EditText donde se mostrara la fecha y hora obtenidas
         inputFecha = findViewById(R.id.et_mostrar_fecha_picker);
         inputHora = findViewById(R.id.et_mostrar_hora_picker);
 
         //Widget ImageButton del cual usaremos el evento clic para obtener la fecha y hora
-        ibObtenerFecha = (ImageButton) findViewById(R.id.ib_obtener_fecha);
-        ibObtenerHora = (ImageButton) findViewById(R.id.ib_obtener_hora);
+        ibObtenerFecha = findViewById(R.id.ib_obtener_fecha);
+        ibObtenerHora = findViewById(R.id.ib_obtener_hora);
 
         //Evento setOnClickListener - clic
         ibObtenerFecha.setOnClickListener(this);
@@ -90,14 +86,14 @@ public class ViajeActivity extends BaseActivity
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         //Crear spinner con los datos posibles para equipaje
-        Spinner mEquipajeSpinner = (Spinner) findViewById(R.id.spinner_equipaje);
+        Spinner mEquipajeSpinner = findViewById(R.id.spinner_equipaje);
         String[] equipaje = {"Si", "No"};
         mEquipajeSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, equipaje));
 
         //Crear spinner con los datos posibles para CantPasajeros
-        Spinner mCantPasajerosSpinner = (Spinner) findViewById(R.id.spinner_pasajeros);
+        Spinner mCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
         Integer[] cantPasajeros = {1, 2, 3, 4};
-        mCantPasajerosSpinner.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, cantPasajeros));
+        mCantPasajerosSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cantPasajeros));
 
         //Boton de envio de formulario para crear un nuevo viaje
         mSubmitButton = findViewById(R.id.submit_post);

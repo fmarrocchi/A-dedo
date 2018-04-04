@@ -8,6 +8,8 @@
     <color name="verde">#D8F6CE</color>
     <color name="grisclaro">#E6E6E6</color>
 
+    <color name="snackbar_aceptar">#ffff7663</color>
+
     <color name="bg_login">#3C78BF</color>
     <color name="bg_register">#2e3237</color>
     <color name="bg_main">#428bca</color>
