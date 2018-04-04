@@ -153,4 +153,10 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    public void buscarViaje(View view){
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+
+    }
+
 }

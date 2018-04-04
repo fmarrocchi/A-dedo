@@ -1,5 +1,6 @@
 package com.proyectos.florm.a_dedo;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -21,8 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 import java.util.Calendar;
 
-public class ViajeActivity extends BaseActivity
-        implements View.OnClickListener {
+public class ViajeActivity extends BaseActivity implements View.OnClickListener {
 
     private DatabaseReference mDatabase;
     //Variable para guardar mail identificador del usuario actual
@@ -33,9 +33,6 @@ public class ViajeActivity extends BaseActivity
     private Button mSubmitButton;
 
     private static final String REQUIRED = "Required";
-    private static final String CERO = "0";
-    private static final String BARRA = "/";
-    private static final String DOS_PUNTOS = ":";
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -48,9 +45,6 @@ public class ViajeActivity extends BaseActivity
     //Variables para obtener la hora hora
     final int hora = c.get(Calendar.HOUR_OF_DAY);
     final int minuto = c.get(Calendar.MINUTE);
-
-    //Widgets para fecha y hora
-    ImageButton ibObtenerFecha, ibObtenerHora;
 
     //Asocia variables del formulario para obtener los datos ingresados para crear un viaje
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +66,8 @@ public class ViajeActivity extends BaseActivity
         inputDireccion = findViewById(R.id.direccion);
 
         //Widget EditText donde se mostrara la fecha y hora obtenidas
-        inputFecha = findViewById(R.id.et_mostrar_fecha_picker);
-        inputHora = findViewById(R.id.et_mostrar_hora_picker);
-
-        //Widget ImageButton del cual usaremos el evento clic para obtener la fecha y hora
-        ibObtenerFecha = findViewById(R.id.ib_obtener_fecha);
-        ibObtenerHora = findViewById(R.id.ib_obtener_hora);
-
-        //Evento setOnClickListener - clic
-        ibObtenerFecha.setOnClickListener(this);
-        ibObtenerHora.setOnClickListener(this);
+        inputFecha = findViewById(R.id.etDate);
+        inputHora = findViewById(R.id.etTime);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -191,52 +177,36 @@ public class ViajeActivity extends BaseActivity
     //Oyente botones del widget de fecha y hora
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.ib_obtener_fecha:
-                obtenerFecha();
-            case R.id.ib_obtener_hora:
-                obtenerHora();
             case R.id.submit_post:
                 submitPost();
                 break;
         }
     }
 
-    private void obtenerFecha(){
-        DatePickerDialog recogerFecha = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
-                final int mesActual = month + 1;
-                //Formateo el día obtenido: antepone el 0 si son menores de 10
-                String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
-                //Formateo el mes obtenido: antepone el 0 si son menores de 10
-                String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
-                //Muestro la fecha con el formato deseado
-                inputFecha.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+    public void showDatePickerDialog(View view) {
+        DatePickerDialog dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                // +1 because january is zero
+                final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
+                inputFecha.setText(selectedDate);
             }
         },anio, mes, dia);
         //Muestro el widget
-        recogerFecha.show();
+        dateDialog.show();
     }
 
-    private void obtenerHora(){
-        TimePickerDialog recogerHora = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                //Formateo el hora obtenido: antepone el 0 si son menores de 10
-                String horaFormateada =  (hourOfDay < 10)? String.valueOf(CERO + hourOfDay) : String.valueOf(hourOfDay);
-                //Formateo el minuto obtenido: antepone el 0 si son menores de 10
-                String minutoFormateado = (minute < 10)? String.valueOf(CERO + minute):String.valueOf(minute);
-                //Obtengo el valor a.m. o p.m., dependiendo de la selección del usuario
-                String AM_PM;
-                if(hourOfDay < 12) {
-                    AM_PM = "a.m.";
-                } else {
-                    AM_PM = "p.m.";
-                }
-                //Muestro la hora con el formato deseado
-                inputHora.setText(horaFormateada + DOS_PUNTOS + minutoFormateado + " " + AM_PM);
+    public void showTimePickerDialog(View view) {
+        TimePickerDialog timeDialog = new TimePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, new TimePickerDialog.OnTimeSetListener() {
+            public void onTimeSet(TimePicker view, int hour, int minutes) {
+                final String selectedTime = twoDigits(hour) + ":" + twoDigits(minutes);
+                inputHora.setText(selectedTime);
             }
-        }, hora, minuto, false);
+        },hora, minuto, true);
+        //Muestro el widget
+        timeDialog.show();
+    }
 
-            recogerHora.show();
+    private String twoDigits(int n) {
+        return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
 }
