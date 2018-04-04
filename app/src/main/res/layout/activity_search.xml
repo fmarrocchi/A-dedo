@@ -23,17 +23,19 @@
             android:text="Busca tu viaje"
             android:textSize="24dp" />
 
-        <AutoCompleteTextView
-            android:id="@+id/origenField"
+        <fragment
+            android:id="@+id/origen_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Desde" />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
 
-        <AutoCompleteTextView
-            android:id="@+id/destinoField"
+        <fragment
+            android:id="@+id/destino_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="A" />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilPlannedDate"
