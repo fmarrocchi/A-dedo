@@ -16,6 +16,11 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,9 +33,15 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
     private ProgressBar progressBar;
-    private EditText inputDestino, inputOrigen, inputInfo, inputTel, inputDireccion, inputLocalidad, inputHora, inputFecha;
+    private EditText inputInfo, inputTel, inputLocalidad, inputHora, inputFecha;
     private Spinner inputEquipajeSpinner, inputCantPasajerosSpinner;
     private Button mSubmitButton;
+    private PlaceAutocompleteFragment origenAutocomplFrag, destinoAutocomplFrag, direccionAutocomplFrag;
+
+    //Variables para guardar el origen, destino y direccion que ingresa el usuario
+    private String origen;
+    private String destino;
+    private String direccion;
 
     private static final String REQUIRED = "Required";
 
@@ -58,12 +69,9 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //Variables formulario
-        inputDestino = findViewById(R.id.field_destino);
-        inputOrigen = findViewById(R.id.field_salida);
         inputEquipajeSpinner = findViewById(R.id.spinner_equipaje);
         inputCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
         inputInfo = findViewById(R.id.field_info_adicional);
-        inputDireccion = findViewById(R.id.direccion);
 
         //Widget EditText donde se mostrara la fecha y hora obtenidas
         inputFecha = findViewById(R.id.etDate);
@@ -83,13 +91,65 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
 
         //Boton de envio de formulario para crear un nuevo viaje
         mSubmitButton = findViewById(R.id.submit_post);
+
+
+        //Fragmento autocompletado para el origen
+        origenAutocomplFrag = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.origen_autocomplete_fragment);
+        origenAutocomplFrag.setHint("Desde");
+
+        origenAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                origen = place.getName().toString();
+            }
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("ERROR", "An error occurred: " + status);
+            }
+        });
+
+        //Fragmento autocompletado para el destino
+        destinoAutocomplFrag = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.destino_autocomplete_fragment);
+        destinoAutocomplFrag.setHint("Hacia");
+
+        destinoAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                destino = place.getName().toString();
+            }
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("ERROR", "An error occurred: " + status);
+            }
+        });
+
+        //Fragmento autocompletado para la direccion
+        direccionAutocomplFrag = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.direccion_autocomplete_fragment);
+        direccionAutocomplFrag.setHint("Dirección de salida");
+
+        direccionAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                direccion = place.getName().toString();
+            }
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("ERROR", "An error occurred: " + status);
+            }
+        });
     }
 
     //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de datos
-    private void createViaje(String direccion, String conductor, String destino, String salida, String hora,
+    private void createViaje(String conductor, String hora,
                              String fecha, String equipaje, Integer pasajeros, String estado, String informacion) {
         String key = mDatabase.child("viajes").push().getKey();
-        Viaje viaje = new Viaje(direccion, conductor, destino, salida, hora, fecha, equipaje, pasajeros, estado, informacion);
+        Viaje viaje = new Viaje(direccion, conductor, destino, origen, hora, fecha, equipaje, pasajeros, estado, informacion);
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
             public void onComplete(DatabaseError error, DatabaseReference ref) {
@@ -109,25 +169,22 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
 
     //Enviar formulario con datos del viaje a crear
     private void submitPost() {
-        final String destino = inputDestino.getText().toString();
-        final String origen = inputOrigen.getText().toString();
         final String hora = inputHora.getText().toString();
         final String fecha = inputFecha.getText().toString();
         final String equipaje = inputEquipajeSpinner.getSelectedItem().toString();
         final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
-        final String direccion = inputDireccion.getText().toString();
         String informacion = inputInfo.getText().toString();
 
-        // Destino is required
-        if (TextUtils.isEmpty(destino)) {
-            inputDestino.setError(REQUIRED);
-            return;
-        }
-        // Salida is required
-        if (TextUtils.isEmpty(origen)) {
-            inputOrigen.setError(REQUIRED);
-            return;
-        }
+//        // Destino is required
+//        if (TextUtils.isEmpty(destino)) {
+//            destinoAutocomplFrag.setError(REQUIRED);
+//            return;
+//        }
+//        // Salida is required
+//        if (TextUtils.isEmpty(origen)) {
+//            origenAutocomplFrag.setError(REQUIRED);
+//            return;
+//        }
         // Hora is required
         if (TextUtils.isEmpty(hora)) {
             inputHora.setError(REQUIRED);
@@ -139,11 +196,11 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
             return;
         }
 
-        // Direccion is required
-        if (TextUtils.isEmpty(direccion)) {
-            inputDireccion.setError(REQUIRED);
-            return;
-        }
+//        // Direccion is required
+//        if (TextUtils.isEmpty(direccion)) {
+//            inputDireccion.setError(REQUIRED);
+//            return;
+//        }
 
         //Si no hay informacion extra le asigno un guion (no es campo requerido)
         if (TextUtils.isEmpty(informacion)) {
@@ -155,13 +212,14 @@ public class ViajeActivity extends BaseActivity implements View.OnClickListener 
 
         progressBar.setVisibility(View.VISIBLE);
 
-        createViaje(direccion, usuario, destino, origen, hora, fecha, equipaje, pasajeros, "Activo", informacion);
+        createViaje(usuario, hora, fecha, equipaje, pasajeros, "Activo", informacion);
         setEditingEnabled(true);
     }
 
     private void setEditingEnabled(boolean enabled) {
-        inputDestino.setEnabled(enabled);
-        inputOrigen.setEnabled(enabled);
+        // ver como hacer esto con un fragmento
+//        inputDestino.setEnabled(enabled);
+//        inputOrigen.setEnabled(enabled);
         inputCantPasajerosSpinner.setEnabled(enabled);
         inputHora.setEnabled(enabled);
         inputFecha.setEnabled(enabled);

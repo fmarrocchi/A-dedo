@@ -102,11 +102,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void buscar(View view){
-        //String origen = inputOrigen.getText().toString();
-
-        //destino = inputDestino.getText().toString();
         fecha = etPlannedDate.getText().toString();
-       // autocompleteFragment.getText().toString();
 
         mostrarViajes();
     }

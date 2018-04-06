@@ -35,12 +35,12 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
-                <EditText
-                    android:id="@+id/field_destino"
+                <fragment
+                    android:id="@+id/origen_autocomplete_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Destino"
-                    android:maxLines="1" />
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -49,13 +49,12 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
-                <EditText
-                    android:id="@+id/field_salida"
+                <fragment
+                    android:id="@+id/destino_autocomplete_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/field_title"
-                    android:hint="Salida"
-                    android:maxLines="1" />
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    />
             </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -145,11 +144,12 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
-                <EditText
-                    android:id="@+id/direccion"
+                <fragment
+                    android:id="@+id/direccion_autocomplete_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Direccion" />
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
