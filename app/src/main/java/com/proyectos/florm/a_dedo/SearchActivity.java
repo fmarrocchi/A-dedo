@@ -102,7 +102,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private String twoDigits(int n) {
-
         return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
 

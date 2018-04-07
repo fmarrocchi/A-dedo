@@ -96,7 +96,6 @@ public class ListarViajesActivity extends BaseActivity {
                 new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, ViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-
                             contViajes++;
 
                             viajeViewHolder.setDestino(" " + viaje.getDestino());

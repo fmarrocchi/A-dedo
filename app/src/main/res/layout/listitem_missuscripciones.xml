@@ -147,6 +147,7 @@
             android:textSize="15dp" />
     </LinearLayout>
 
+
     <Button
         android:id="@+id/btn_darDeBaja"
         android:layout_width="wrap_content"
