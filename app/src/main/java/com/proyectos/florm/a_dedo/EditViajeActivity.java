@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -25,24 +26,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ViajeActivity extends BaseActivity  {
+public class EditViajeActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
     private ProgressBar progressBar;
-    private EditText inputInfo, inputTel, inputLocalidad, inputHora, inputFecha;
+    private EditText inputInfo, inputHora, inputFecha;
     private Spinner inputCantPasajerosSpinner;
     private Button mSubmitButton;
-    private PlaceAutocompleteFragment origenAutocomplFrag, destinoAutocomplFrag, direccionAutocomplFrag;
+    private PlaceAutocompleteFragment direccionAutocomplFrag;
 
-    //Variables para guardar el origen, destino y direccion que ingresa el usuario
-    private String origen;
-    private String destino;
+    //Variables para guardar la nueva direccion
     private String direccion;
-
-    private static final String REQUIRED = "Required";
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -56,7 +55,7 @@ public class ViajeActivity extends BaseActivity  {
     final int hora = c.get(Calendar.HOUR_OF_DAY);
     final int minuto = c.get(Calendar.MINUTE);
 
-    //Asocia variables del formulario para obtener los datos ingresados para crear un viaje
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viaje);
@@ -85,40 +84,6 @@ public class ViajeActivity extends BaseActivity  {
         //Boton de envio de formulario para crear un nuevo viaje
         mSubmitButton = findViewById(R.id.submit_post);
 
-        //Fragmento autocompletado para el origen
-        origenAutocomplFrag = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.origen_autocomplete_fragment);
-        origenAutocomplFrag.setHint("Desde");
-
-        origenAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                origen = place.getName().toString();
-            }
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("ERROR", "An error occurred: " + status);
-            }
-        });
-
-        //Fragmento autocompletado para el destino
-        destinoAutocomplFrag = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.destino_autocomplete_fragment);
-        destinoAutocomplFrag.setHint("Hacia");
-
-        destinoAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                destino = place.getName().toString();
-            }
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("ERROR", "An error occurred: " + status);
-            }
-        });
-
         //Fragmento autocompletado para la direccion
         direccionAutocomplFrag = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.direccion_autocomplete_fragment);
@@ -135,82 +100,73 @@ public class ViajeActivity extends BaseActivity  {
                 Log.i("ERROR", "An error occurred: " + status);
             }
         });
+
+    }
+
+    private void setearDatosViejos(){
+        //Obtener los datos que ya estaban
+        String key = "";
+        DatabaseReference viajeRef = mDatabase.child("viajes/"+ key);
+       // viajeRef.getRef().
+       // direccionAutocomplFrag.setText(viajeRef.);
+        //inputHora.setText("");
+//        inputFecha.setText("");
+//        inputInfo.setText("");
     }
 
     //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de datos
-    private void createViaje(String conductor, String hora, String fecha, Integer pasajeros, String informacion) {
-        Log.d("mgs", "create viaje");
-        String key = mDatabase.child("viajes").push().getKey();
-        Viaje viaje = new Viaje(direccion, conductor, destino, origen, hora, fecha, pasajeros, informacion);
-        mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
-            //El segundo parametro es para recibir un mensaje si hubo error en el setValue
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if(error == null){
-                    Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_SHORT).show();
-                    //Creo con exito y vuelvo a la actividad anterior
-                    progressBar.setVisibility(View.GONE);
-                    onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
-                }
-                else{
-                    Snackbar.make(findViewById(R.id.drawer_layout), "No se pudo crear viaje!", Snackbar.LENGTH_SHORT).show();
-                    Log.e("ERROR", "Error: " + error.getMessage());
-                }
-            }
-        });
+    private void editViaje(String hora, String fecha, Integer pasajeros, String informacion) {
+       // DatabaseReference viaje = mDatabase.child("viajes").child(key);
+                //DatabaseReference hopperRef = usersRef.child("gracehop");
+        Map<String, Object> viajeUpdates = new HashMap<>();
+        viajeUpdates.put("nickname", "Amazing Grace");
+
+       // hopperRef.updateChildrenAsync(hopperUpdates);
+
+        //Viaje viaje = new Viaje();
+        //direccion, conductor, hora, fecha, pasajeros, informacion);
+       // if(!direccion.equals(""))
+
+
+
+//        mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
+//            //El segundo parametro es para recibir un mensaje si hubo error en el setValue
+//            public void onComplete(DatabaseError error, DatabaseReference ref) {
+//                if(error == null){
+//                    Snackbar.make(findViewById(R.id.drawer_layout), "Viaje editado correctamente", Snackbar.LENGTH_SHORT).show();
+//                    //Creo con exito y vuelvo a la actividad anterior
+//                    progressBar.setVisibility(View.GONE);
+//                    onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
+//                }
+//                else{
+//                    Snackbar.make(findViewById(R.id.drawer_layout), "No se pudo editar el viaje!", Snackbar.LENGTH_SHORT).show();
+//                    Log.e("ERROR", "Error: " + error.getMessage());
+//                }
+//            }
+//        });
     }
 
     //Enviar formulario con datos del viaje a crear
-    private void submitPost() {
+    private void guardarCambios(View view) {
         final String hora = inputHora.getText().toString();
         final String fecha = inputFecha.getText().toString();
         final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
         String informacion = inputInfo.getText().toString();
 
-//        // Destino is required
-//        if (TextUtils.isEmpty(destino)) {
-//            destinoAutocomplFrag.setError(REQUIRED);
-//            return;
-//        }
-//        // Salida is required
-//        if (TextUtils.isEmpty(origen)) {
-//            origenAutocomplFrag.setError(REQUIRED);
-//            return;
-//        }
-        // Hora is required
-        if (TextUtils.isEmpty(hora)) {
-            inputHora.setError(REQUIRED);
-            return;
-        }
-        // Fecha is required
-        if (TextUtils.isEmpty(fecha)) {
-            inputFecha.setError(REQUIRED);
-            return;
-        }
-
-//        // Direccion is required
-//        if (TextUtils.isEmpty(direccion)) {
-//            inputDireccion.setError(REQUIRED);
-//            return;
-//        }
-
         //Si no hay informacion extra le asigno un guion (no es campo requerido)
         if (TextUtils.isEmpty(informacion)) {
-           informacion = " No hay información adicional.";
+            informacion = " No hay información adicional.";
         }
 
         // Deshabilitar el boton para que no se cree mas de una vez
         setEditingEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
-        Log.d("mgs", "antes de crear viaje");
-        createViaje(usuario, hora, fecha, pasajeros, informacion);
+        editViaje(hora, fecha, pasajeros, informacion);
         setEditingEnabled(true);
     }
 
     private void setEditingEnabled(boolean enabled) {
-        // ver como hacer esto con un fragmento
-//        inputDestino.setEnabled(enabled);
-//        inputOrigen.setEnabled(enabled);
         inputCantPasajerosSpinner.setEnabled(enabled);
         inputHora.setEnabled(enabled);
         inputFecha.setEnabled(enabled);
@@ -220,19 +176,6 @@ public class ViajeActivity extends BaseActivity  {
         } else {
             mSubmitButton.setVisibility(View.GONE);
         }
-    }
-
-//    //Oyente botones del widget de fecha y hora
-//    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.submit_post:
-//                submitPost();
-//                break;
-//        }
-//    }
-//
-    public void crear(View view){
-        submitPost();
     }
 
     public void showDatePickerDialog(View view) {

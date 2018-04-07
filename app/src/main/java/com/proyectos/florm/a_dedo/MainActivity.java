@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity
             case R.id.buttonSuscripciones:
                 //Creamos el Intent de la clase viajes
                 intent = new Intent(MainActivity.this,  ListarViajesActivity.class);
-                intent.putExtra("usuario", user.getEmail());
+                intent.putExtra("usuario", user.getEmail()); //TODO CAMBIAR A ID SI LA LISTA DE SUSCRIPTOS PASA A SER DE IDS
                 intent.putExtra("opcion", "suscripciones");
                 //Iniciamos la nueva actividad
                 startActivity(intent);

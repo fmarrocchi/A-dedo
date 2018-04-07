@@ -1,21 +1,16 @@
 package com.proyectos.florm.a_dedo;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -85,7 +80,6 @@ public class ListarViajesActivity extends BaseActivity {
                 };
 
         return adapter;
-
     }
 
 
@@ -123,11 +117,11 @@ public class ListarViajesActivity extends BaseActivity {
         contViajes=0;
         usuario = getIntent().getExtras().getString("usuario");
         FirebaseRecyclerAdapter adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, ViajeViewHolder.class, mDataBase) {
+                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, ViajeViewHolder.class, mDataBase.orderByChild("suscriptos")) {
                     public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if ((viaje.getSuscriptos().contains(usuario))){
+                        if ((viaje.getSuscriptos().contains(usuario))){ //TODO CAMBIAR SI CAMBIA LA FORMA DE LA LISTA DE SUSCRIPTOS
                             contViajes++;
 
                             viajeViewHolder.setDestino(" " + viaje.getDestino());
@@ -171,8 +165,8 @@ public class ListarViajesActivity extends BaseActivity {
         else
             if(opcion.equals("misviajes"))
                 adapter = adapterMisViajes();
-            //else //opcion = mis suscripciones
-              //  adapter = adapterMisSuscripciones();
+            else //opcion = mis suscripciones
+                adapter = adapterMisSuscripciones();
 
 
         recycler.setAlpha(0.90f); //Dar transparencia
@@ -212,11 +206,12 @@ public class ListarViajesActivity extends BaseActivity {
                             }
 
 
-                //--------Aca faltaria agregar cant de suscripciones a viaje al usuario---------
-
-                            Map<String, Object> viajeNuevo = viaje.toMap();
+                //--------TODO Aca faltaria agregar cant de suscripciones a viaje al usuario---------
+                            //Editar el viaje para agregar al nuevo suscripto
+                            //Map<String, Object> viajeNuevo = viaje.toMap();
                             Map<String, Object> childUpdates = new HashMap<>();
-                            childUpdates.put("/" + key , viajeNuevo);
+                            //childUpdates.put("/" + key , viajeNuevo);
+                            childUpdates.put("/" + key , viaje);
                             mDataBase.updateChildren(childUpdates);
 
                             Snackbar.make(findViewById(R.id.listar_layout), cant + " lugares reservados", Snackbar.LENGTH_INDEFINITE)

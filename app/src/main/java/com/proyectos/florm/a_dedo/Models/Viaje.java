@@ -8,7 +8,6 @@ import java.util.Map;
 public class Viaje {
     private String destino;
     private String salida;
-    private String equipaje;
     private String hora;
     private String fecha;
     private Integer pasajeros;
@@ -19,7 +18,7 @@ public class Viaje {
 
     public Viaje(){ }
 
-    public Viaje(String dir, String cond, String des, String sal, String hs, String f, String eq, Integer pas, String est, String info){
+    public Viaje(String dir, String cond, String des, String sal, String hs, String f, Integer pas, String info){
         suscriptos = new ArrayList<String>();
         conductor = cond;
         direccion = dir;
