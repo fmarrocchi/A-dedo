@@ -83,8 +83,7 @@
                 android:inputType="date"
                 android:focusable="false"
                 android:clickable="true"
-                android:maxLines="1"
-                android:onClick="showDatePickerDialog"/>
+                android:maxLines="1"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -170,15 +169,6 @@
                 android:enabled="true"
                 android:text=" Ofrecer viaje "
                 android:onClick="crear"/>
-            <Button
-                android:id="@+id/unboton"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:layout_gravity="bottom|center"
-                android:enabled="true"
-                android:text=" Soy un boton re boludo " />
 
         </LinearLayout>
     </ScrollView>
