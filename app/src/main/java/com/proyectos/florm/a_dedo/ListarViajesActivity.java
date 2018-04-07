@@ -29,6 +29,10 @@ public class ListarViajesActivity extends BaseActivity {
 
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
+    int contViajes;
+    String destino;
+    String fecha;
+    String usuario;
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBase = database.getReference().child("viajes");
@@ -42,42 +46,142 @@ public class ListarViajesActivity extends BaseActivity {
         mostrarViajes();
     }
 
+    public FirebaseRecyclerAdapter adapterBuscar(){
+        contViajes=0;
+        String origen = getIntent().getExtras().getString("origen");
+        destino = getIntent().getExtras().getString("destino");
+        fecha = getIntent().getExtras().getString("fecha");
+        FirebaseRecyclerAdapter adapter =
+                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase.orderByChild("salida").equalTo(origen)) {
+                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
+                        final String itemId = getRef(position).getKey();
+
+                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha))) {
+                            contViajes++;
+
+                            viajeViewHolder.setDestino(" " + viaje.getDestino());
+                            viajeViewHolder.setSalida(" " + viaje.getSalida());
+                            viajeViewHolder.setFecha(" " + viaje.getFecha());
+                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
+                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
+                            viajeViewHolder.setInformacion(" " + viaje.getInformacion());
+                            viajeViewHolder.setDatosConductor(viaje.getConductor());
+
+                            viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    //Suscribir usuario actual a viaje seleccionado
+                                    suscribirUsuario(viaje, itemId);
+                                }
+                            });
+                            final String list_viaje_id  = getRef(position).getKey();
+
+                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    viajeViewHolder.masInfo();
+                                }
+                            });
+                        }
+                    }
+                };
+
+        return adapter;
+
+    }
+
+
+    public FirebaseRecyclerAdapter adapterMisViajes(){
+        contViajes=0;
+        String conductor = getIntent().getExtras().getString("conductor");
+        FirebaseRecyclerAdapter adapter =
+                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, ViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
+                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
+                        final String itemId = getRef(position).getKey();
+
+                            contViajes++;
+
+                            viajeViewHolder.setDestino(" " + viaje.getDestino());
+                            viajeViewHolder.setSalida(" " + viaje.getSalida());
+                            viajeViewHolder.setFecha(" " + viaje.getFecha());
+                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
+                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
+                            //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TIRA NULL POINTER EXCEPTION ACA NO SE PQ
+
+                            final String list_viaje_id  = getRef(position).getKey();
+
+                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    viajeViewHolder.masInfo();
+                                }
+                            });
+                    }
+                };
+
+        return adapter;
+
+    }
+
+    public FirebaseRecyclerAdapter adapterMisSuscripciones(){
+        contViajes=0;
+        usuario = getIntent().getExtras().getString("usuario");
+        FirebaseRecyclerAdapter adapter =
+                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, ViajeViewHolder.class, mDataBase) {
+                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
+                        final String itemId = getRef(position).getKey();
+
+                        if ((viaje.getSuscriptos().contains(usuario))){
+                            contViajes++;
+
+                            viajeViewHolder.setDestino(" " + viaje.getDestino());
+                            viajeViewHolder.setSalida(" " + viaje.getSalida());
+                            viajeViewHolder.setFecha(" " + viaje.getFecha());
+                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
+                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
+                            viajeViewHolder.setInformacion(" " + viaje.getInformacion());
+                            viajeViewHolder.setDatosConductor(viaje.getConductor());
+
+                            viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    //Desinscribir usuario actual a viaje seleccionado
+                                    //dessuscribirUsuario(viaje, itemId);
+                                }
+                            });
+                            final String list_viaje_id  = getRef(position).getKey();
+
+                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    viajeViewHolder.masInfo();
+                                }
+                            });
+                        }
+                    }
+                };
+
+        return adapter;
+
+    }
+
     private void mostrarViajes(){
         //Inicialización RecyclerView
         recycler = findViewById(R.id.listaViajes);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase) {
-                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
-                        final String itemId  = getRef(position).getKey();
+        String opcion = getIntent().getExtras().getString("opcion");
+        if(opcion.equals("buscar"))
+            adapter = adapterBuscar();
+        else
+            if(opcion.equals("misviajes"))
+                adapter = adapterMisViajes();
+            //else //opcion = mis suscripciones
+              //  adapter = adapterMisSuscripciones();
 
-                        viajeViewHolder.setDestino(" "+viaje.getDestino());
-                        viajeViewHolder.setSalida(" "+viaje.getSalida());
-                        viajeViewHolder.setFecha(" "+viaje.getFecha());
-                        viajeViewHolder.setHora(" "+viaje.getHora()+ " hs");
-                        viajeViewHolder.setPasajeros(" "+viaje.getPasajeros());
-                        viajeViewHolder.setInformacion(" "+viaje.getInformacion());
-                        viajeViewHolder.setDatosConductor(viaje.getConductor());
 
-                        viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                //Suscribir usuario actual a viaje seleccionado
-                                suscribirUsuario(viaje, itemId);
-                            }
-                        });
-                        final String list_viaje_id  = getRef(position).getKey();
-
-                        viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                viajeViewHolder.masInfo();
-                            }
-                        });
-                    }
-                };
         recycler.setAlpha(0.90f); //Dar transparencia
         recycler.setAdapter(adapter);
+        if (contViajes == 0) {
+            Snackbar.make(findViewById(R.id.lytContenedor), "Lo sentimos, aún no hay viajes que coincidan con su búsqueda.", Snackbar.LENGTH_LONG).show();
+        }
+
     }
 
     public void suscribirUsuario(Viaje v, String k){

@@ -28,7 +28,6 @@ public class MainActivity extends BaseActivity
         implements View.OnClickListener {
 
     private TextView txtTitulo;
-    private Button buttonListarViajes, buttonVerPerfil;
     private ProgressBar progressBar;
     //Variables para registro de usuario
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -134,8 +133,10 @@ public class MainActivity extends BaseActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonListarViajes:
-                //Creamos el Intent de la clase viajes
-                Intent intent = new Intent(MainActivity.this,  ListarViajesActivity.class);
+                //Creamos el Intent de listar viajes
+                Intent intent = new Intent(this,  ListarViajesActivity.class);
+                intent.putExtra("opcion", "misviajes");
+                intent.putExtra("conductor", user.getUid().toString());
                 //Iniciamos la nueva actividad
                 startActivity(intent);
                 break;
@@ -145,11 +146,20 @@ public class MainActivity extends BaseActivity
                 //Iniciamos la nueva actividad
                 startActivity(intent);
                 break;
+            case R.id.buttonSuscripciones:
+                //Creamos el Intent de la clase viajes
+                intent = new Intent(MainActivity.this,  ListarViajesActivity.class);
+                intent.putExtra("usuario", user.getEmail());
+                intent.putExtra("opcion", "suscripciones");
+                //Iniciamos la nueva actividad
+                startActivity(intent);
+                break;
             case R.id.tab_item_inicio:
                 txtTitulo.setText("Inicio");
                 break;
             case R.id.tab_item_misviajes:
                 txtTitulo.setText("Mis viajes");
+                break;
         }
     }
 

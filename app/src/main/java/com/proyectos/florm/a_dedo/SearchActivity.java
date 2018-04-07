@@ -1,48 +1,27 @@
 package com.proyectos.florm.a_dedo;
 
 import android.app.DatePickerDialog;
-import android.app.FragmentManager;
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.view.View;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+//Google api places
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
-import com.proyectos.florm.a_dedo.Models.Viaje;
 
 import java.util.Calendar;
-
-//API GOOGLE PLACES
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import android.support.v4.app.FragmentActivity;
-import com.google.android.gms.location.places.Places;
 
 public class SearchActivity extends AppCompatActivity {
 
     //Campos de la vista
     private EditText etPlannedDate, inputDestino, inputOrigen;
     private PlaceAutocompleteFragment origenAutocomplFrag, destinoAutocomplFrag;
-
-    //Referencia a la base de datos
-    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference mDataBase = database.getReference().child("viajes");
-    //Para listar
-    private FirebaseRecyclerAdapter adapter;
-    private RecyclerView recycler;
 
     //Strings utilizados para el filtrado
     private String origen;
@@ -55,8 +34,6 @@ public class SearchActivity extends AppCompatActivity {
     final int mes = c.get(Calendar.MONTH);
     final int dia = c.get(Calendar.DAY_OF_MONTH);
     final int anio = c.get(Calendar.YEAR);
-
-    int contViajes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,54 +80,13 @@ public class SearchActivity extends AppCompatActivity {
 
     public void buscar(View view){
         fecha = etPlannedDate.getText().toString();
+        Intent intent = new Intent(this, ListarViajesActivity.class);
+        intent.putExtra("origen", origen);
+        intent.putExtra("destino", destino);
+        intent.putExtra("fecha", fecha);
+        intent.putExtra("opcion", "buscar");
 
-        mostrarViajes();
-    }
-
-    public void mostrarViajes() {
-        //Inicialización RecyclerView
-        recycler = (RecyclerView) findViewById(R.id.listaViajes);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        contViajes = 0;
-
-        adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase.orderByChild("salida").equalTo(origen)) {
-                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
-                        final String itemId = getRef(position).getKey();
-
-                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha))) {
-                            contViajes++;
-
-                            viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setSalida(" " + viaje.getSalida());
-                            viajeViewHolder.setFecha(" " + viaje.getFecha());
-                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
-                            viajeViewHolder.setInformacion(" " + viaje.getInformacion());
-                            viajeViewHolder.setDatosConductor(viaje.getConductor());
-
-                            viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    //Suscribir usuario actual a viaje seleccionado
-                                    //suscribirUsuario(viaje, itemId);
-                                }
-                            });
-                            final String list_viaje_id = getRef(position).getKey();
-
-                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    //viajeViewHolder.masInfo();
-                                }
-                            });
-                        }
-                    }
-                };
-        recycler.setAlpha(0.90f); //Dar transparencia
-        recycler.setAdapter(adapter);
-        if (contViajes == 0) {
-             Snackbar.make(findViewById(R.id.lytContenedor), "Lo sentimos, aún no hay viajes que coincidan con su búsqueda.", Snackbar.LENGTH_LONG).show();
-        }
+        startActivity(intent);
     }
 
     public void showDatePickerDialog(View view) {

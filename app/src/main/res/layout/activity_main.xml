@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
             android:textColor="@color/white"
-            android:text="Viajes" />
+            android:text="Mis Viajes" />
 
         <Button
             android:id="@+id/buttonVerPerfil"
@@ -104,6 +104,15 @@
             android:textColor="@color/white"
             android:text="Buscar viaje"
             android:onClick="buscarViaje"/>
+
+        <Button
+            android:id="@+id/buttonSuscripciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Mis suscripciones"
+            android:onClick="mostrarSuscripciones"/>
 
         <LinearLayout
             android:layout_width="match_parent"
