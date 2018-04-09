@@ -166,7 +166,6 @@ public class SignInGoogleActivity extends BaseActivity {
                                Log.i("Alert dialog", "Cancelar");
                             }
                         });
-
         return builder.create();
     }
 

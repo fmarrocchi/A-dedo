@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -22,7 +24,7 @@ import com.proyectos.florm.a_dedo.Models.User;
 
 public class SignUpActivity extends BaseActivity {
 
-    private EditText inputEmail, inputPassword, inputNombre, inputApellido, inputFoto, inputTel;
+    private EditText inputEmail, inputPassword, inputPasswordConfirm, inputNombre, inputApellido, inputFoto, inputTel;
     private Button btnSignIn, btnSignUp;
     private FirebaseAuth auth;
 
@@ -40,6 +42,7 @@ public class SignUpActivity extends BaseActivity {
 
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);
+        inputPasswordConfirm = findViewById(R.id.password_confirm);
         inputNombre = findViewById(R.id.nombre);
         inputApellido = findViewById(R.id.apellido);
         inputFoto = findViewById(R.id.foto);
@@ -55,9 +58,10 @@ public class SignUpActivity extends BaseActivity {
             public void onClick(View v) {
                 String mail = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
                 // TODO volver a ingresar password y comaprar
-                String nombre = inputNombre.getText().toString().trim();
-                String apellido = inputApellido.getText().toString().trim();
+                final String nombre = inputNombre.getText().toString().trim();
+                final String apellido = inputApellido.getText().toString().trim();
                 String foto = inputFoto.getText().toString().trim();
                 String tel = inputTel.getText().toString().trim();
 
@@ -67,6 +71,10 @@ public class SignUpActivity extends BaseActivity {
                 }
                 if (TextUtils.isEmpty(password)) {
                     Toast.makeText(getApplicationContext(), "Ingrese contraseña", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(passwordConfirm)) {
+                    Toast.makeText(getApplicationContext(), "Confirmar contraseña", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (password.length() < 6) {
@@ -87,6 +95,11 @@ public class SignUpActivity extends BaseActivity {
                 }
                 if (!URLUtil.isValidUrl(foto))
                     foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
+
+                if (!password.equals(passwordConfirm)){
+                    Toast.makeText(getApplicationContext(), "Las contraseñas no coinciden!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 showProgressDialog();
 
@@ -112,12 +125,18 @@ public class SignUpActivity extends BaseActivity {
                 auth.createUserWithEmailAndPassword(mail, password)
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignUpActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 hideProgressDialog();
                                 if (!task.isSuccessful()) {
                                     Toast.makeText(SignUpActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
-                                } else {
+                                }
+                                else {
+                                    FirebaseUser user = auth.getCurrentUser();
+
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(nombre+" "+ apellido).build();
+
+                                    user.updateProfile(profileUpdates);
                                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                                     finish();
                                 }

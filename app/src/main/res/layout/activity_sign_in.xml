@@ -79,7 +79,6 @@
             android:layout_height="match_parent"
             android:textColorHint="@color/colorPrimaryDark"
             android:layout_marginTop="10dp">
-
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
@@ -114,16 +113,29 @@
             android:layout_height="wrap_content"
             android:text="Ingresar con Google" />
 
-        <Button
-            android:id="@+id/btn_signup"
-            android:layout_width="fill_parent"
-            android:layout_height="32dp"
-            android:background="@null"
-            android:text="No sos miembro? Registrate en A-Dedo ahora!"
-            android:textAllCaps="false"
-            android:textColor="@color/input_login_hint"
-            android:textSize="15dp" />
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No sos miembro? "
+                android:background="@null"
+                android:textColor="@color/input_login_hint" />
+            <Button
+                android:id="@+id/btn_signup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:background="@null"
+                android:linksClickable="true"
+                android:text="Registrate ahora"
+                android:textColorLink="@color/colorPrimaryDark"
+                android:autoLink="all"
+                android:textColor="@color/url"
+                android:textSize="15dp" />
+        </LinearLayout>
     </LinearLayout>
     </ScrollView>
 </LinearLayout>
