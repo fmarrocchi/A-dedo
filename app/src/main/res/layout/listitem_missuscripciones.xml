@@ -25,7 +25,7 @@
             android:drawableLeft="@drawable/icono_desde"
             android:gravity="start"
             android:layout_marginHorizontal="10dp"/>
-        <TextView android:id="@+id/lblSalida"
+        <TextView android:id="@+id/lblOrigen"
             android:textSize="15dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -86,7 +86,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/lblPasajeros"
+            android:id="@+id/lblLugares"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
@@ -149,12 +149,13 @@
 
 
     <Button
-        android:id="@+id/btn_darDeBaja"
+        android:id="@+id/btn_desuscribir"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginBottom="5dp"
         android:background="@color/rojo"
-        android:text="Darse de baja" />
+        android:text="Darse de baja"
+        android:onClick="desuscribirUsuario"/>
 
 
 </LinearLayout>

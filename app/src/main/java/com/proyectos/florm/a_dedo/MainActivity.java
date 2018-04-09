@@ -170,6 +170,14 @@ public class MainActivity extends BaseActivity
         startActivity(intent);
     }
 
+    public void mostrarSuscripciones(View view){
+        Intent intent = new Intent(this,  ListarViajesActivity.class);
+        intent.putExtra("opcion", "missuscripciones");
+        intent.putExtra("conductor", user.getUid().toString());
+        //Iniciamos la nueva actividad
+        startActivity(intent);
+    }
+
     public void verificarNumeroTelefono(String key){
         final DatabaseReference referenceUser = database.getReference("usuarios/"+key);
         referenceUser.addListenerForSingleValueEvent(new ValueEventListener() {

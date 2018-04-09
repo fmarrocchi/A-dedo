@@ -1,41 +1,38 @@
 package com.proyectos.florm.a_dedo.Models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Viaje implements Serializable{
     private String destino;
-    private String salida;
+    private String origen;
     private String hora;
     private String fecha;
-    private Integer pasajeros;
+    private Integer lugares;
     private String informacion;
     private String conductor;
     private String direccion;
-    private List<String> suscriptos;
+    private Map<String, Integer> suscriptos; //Mapeo donde la clave es el id del usuario y el valor es la cantidad de reservas para el viaje
 
     public Viaje(){ }
 
-    public Viaje(String dir, String cond, String des, String sal, String hs, String f, Integer pas, String info){
-        suscriptos = new ArrayList<String>();
+    public Viaje(String dir, String cond, String des, String or, String hs, String f, Integer lug, String info){
         conductor = cond;
         direccion = dir;
         destino = des;
-        salida = sal;
-        pasajeros = pas;
+        origen = or;
+        lugares = lug;
         hora = hs;
         fecha = f;
         informacion = info;
     }
 
-    public List<String> getSuscriptos() {
+    public Map<String, Integer> getSuscriptos() {
         return suscriptos;
     }
 
-    public void setSuscriptos(List<String> suscriptos) {
+    public void setSuscriptos(Map<String, Integer> suscriptos) {
         this.suscriptos = suscriptos;
     }
 
@@ -51,8 +48,8 @@ public class Viaje implements Serializable{
         return destino;
     }
 
-    public String getSalida() {
-        return salida;
+    public String getOrigen() {
+        return origen;
     }
 
     public String getHora() {
@@ -63,8 +60,8 @@ public class Viaje implements Serializable{
         return fecha;
     }
 
-    public Integer getPasajeros() {
-        return pasajeros;
+    public Integer getLugares() {
+        return lugares;
     }
 
     public String getInformacion() {
@@ -79,8 +76,8 @@ public class Viaje implements Serializable{
         this.destino = destino;
     }
 
-    public void setSalida(String salida) {
-        this.salida = salida;
+    public void setOrigen(String origen) {
+        this.origen = origen;
     }
 
     public void setHora(String hora) {
@@ -91,8 +88,8 @@ public class Viaje implements Serializable{
         this.fecha = fecha;
     }
 
-    public void setPasajeros(Integer pasajeros) {
-        this.pasajeros = pasajeros;
+    public void setLugares(Integer lugares) {
+        this.lugares = lugares;
     }
 
     public void setInformacion(String informacion) {
@@ -106,10 +103,10 @@ public class Viaje implements Serializable{
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("destino", destino);
-        result.put("salida", salida);
+        result.put("origen", origen);
         result.put("hora", hora);
         result.put("fecha", fecha);
-        result.put("pasajeros", pasajeros);
+        result.put("lugares", lugares);
         result.put("informacion", informacion);
         result.put("conductor", conductor);
         result.put("direccion", direccion);

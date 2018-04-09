@@ -41,17 +41,17 @@ public class Adapter extends RecyclerView.Adapter{
 
     public class ViewHolderViaje extends RecyclerView.ViewHolder{
         TextView lblDestino;
-        TextView lblSalida;
+        TextView lblOrigen;
         TextView lblFecha;
         TextView lblHora;
-        TextView lblPasajeros;
+        TextView lblLugares;
         TextView lblEquipaje;
         TextView lblInformacion;
         Button botonSuscribir;
 
         public ViewHolderViaje(View itemView) {
             super(itemView);
-            lblSalida = (TextView) itemView.findViewById(R.id.lblSalida);
+            lblOrigen = (TextView) itemView.findViewById(R.id.lblOrigen);
             lblDestino = (TextView) itemView.findViewById(R.id.lblDestino);
             lblFecha = (TextView) itemView.findViewById(R.id.lblFecha);
             lblHora = (TextView) itemView.findViewById(R.id.lblHora);
@@ -60,7 +60,7 @@ public class Adapter extends RecyclerView.Adapter{
         }
 
         public void bindViaje(Viaje v) {
-            lblSalida.setText(v.getSalida());
+            lblOrigen.setText(v.getOrigen());
             lblDestino.setText(v.getDestino());
             lblFecha.setText(v.getFecha());
             lblHora.setText(v.getHora());

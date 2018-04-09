@@ -20,8 +20,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Holders.EditViajeViewHolder;
+import com.proyectos.florm.a_dedo.Holders.MisSuscripcionesViewHolder;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
 import com.proyectos.florm.a_dedo.Models.Viaje;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +55,7 @@ public class ListarViajesActivity extends BaseActivity {
         destino = getIntent().getExtras().getString("destino");
         fecha = getIntent().getExtras().getString("fecha");
         FirebaseRecyclerAdapter adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase.orderByChild("salida").equalTo(origen)) {
+                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase.orderByChild("origen").equalTo(origen)) {
                     public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
@@ -60,10 +63,10 @@ public class ListarViajesActivity extends BaseActivity {
                             contViajes++;
 
                             viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setSalida(" " + viaje.getSalida());
+                            viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                             viajeViewHolder.setFecha(" " + viaje.getFecha());
                             viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
+                            viajeViewHolder.setLugares(" " + viaje.getLugares());
                             viajeViewHolder.setInformacion(" " + viaje.getInformacion());
                             viajeViewHolder.setDatosConductor(viaje.getConductor());
 
@@ -97,11 +100,11 @@ public class ListarViajesActivity extends BaseActivity {
                         final String itemId = getRef(position).getKey();
                             contViajes++;
 
+                            viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                             viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setSalida(" " + viaje.getSalida());
                             viajeViewHolder.setFecha(" " + viaje.getFecha());
                             viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
+                            viajeViewHolder.setLugares(" " + viaje.getLugares());
                             viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
                             //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TODO TIRA NULL POINTER EXCEPTION ACA NO SE PQ
 
@@ -134,37 +137,43 @@ public class ListarViajesActivity extends BaseActivity {
 
     public FirebaseRecyclerAdapter adapterMisSuscripciones(){
         contViajes=0;
-        usuario = getIntent().getExtras().getString("usuario");
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseRecyclerAdapter adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, ViajeViewHolder.class, mDataBase.orderByChild("suscriptos")) {
-                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
+                new FirebaseRecyclerAdapter<Viaje, MisSuscripcionesViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, MisSuscripcionesViewHolder.class, mDataBase) {
+                    public void populateViewHolder(final MisSuscripcionesViewHolder suscripcionesViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if ((viaje.getSuscriptos().contains(usuario))){ //TODO CAMBIAR SI CAMBIA LA FORMA DE LA LISTA DE SUSCRIPTOS
+                        if (viaje != null && viaje.getSuscriptos()!= null ){
+                            if (viaje.getSuscriptos().containsKey(usuario))
+                                Log.i("DESUSCRIBIR", "usuario esta: "+usuario);
+                            else
+                                Log.i("DESUSCRIBIR", "usuario no esta: "+usuario);
+                            //TODO CAMBIAR SI CAMBIA LA FORMA DE LA LISTA DE SUSCRIPTOS
                             contViajes++;
 
-                            viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setSalida(" " + viaje.getSalida());
-                            viajeViewHolder.setFecha(" " + viaje.getFecha());
-                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
-                            viajeViewHolder.setInformacion(" " + viaje.getInformacion());
-                            viajeViewHolder.setDatosConductor(viaje.getConductor());
+                            suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
+                            suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
+                            suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
+                            suscripcionesViewHolder.setHora(" " + viaje.getHora() + " hs");
+                            suscripcionesViewHolder.setLugares(" " + viaje.getLugares());
+                            suscripcionesViewHolder.setInformacion(" " + viaje.getInformacion());
+                            suscripcionesViewHolder.setDatosConductor(viaje.getConductor());
 
-                            viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
+                            suscripcionesViewHolder.getBotonDesuscribir().setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
-                                    //Desinscribir usuario actual a viaje seleccionado
-                                    //dessuscribirUsuario(viaje, itemId);
+                                    desuscribirUsuario(viaje, itemId);
                                 }
                             });
                             final String list_viaje_id  = getRef(position).getKey();
 
-                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                            suscripcionesViewHolder.getView().setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
-                                    viajeViewHolder.masInfo();
+                                    suscripcionesViewHolder.masInfo();
                                 }
                             });
                         }
+                        else
+                            Log.i("DESUSCRIBIR", "algo es nulo");
                     }
                 };
 
@@ -184,22 +193,23 @@ public class ListarViajesActivity extends BaseActivity {
         else
             if(opcion.equals("misviajes"))
                 adapter = adapterMisViajes();
-            else //opcion = mis suscripciones
-                adapter = adapterMisSuscripciones();
+            else
+                if (opcion.equals("missuscripciones")){
+                    Log.i("DESUSCRIBIR", "voy a llamar al adapter");
+                    adapter = adapterMisSuscripciones();
+                }
 
 
         recycler.setAlpha(0.90f); //Dar transparencia
         recycler.setAdapter(adapter);
-               if (contViajes == 0) {
-            Snackbar.make(findViewById(R.id.lytContenedor), "Lo sentimos, aún no hay viajes que coincidan con su búsqueda.", Snackbar.LENGTH_LONG).show();
-        }
 
     }
 
     public void suscribirUsuario(Viaje v, String k){
-        final int cantLugares = v.getPasajeros();
+        final int cantLugares = v.getLugares();
         final Viaje viaje =v;
         final String key = k;
+        Log.i("ItemId", "es: "+k+" y el userId es: "+FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         //Opciones de dialogo segun catidad de lugares disponibles
         final String[] items = {"1","2","3","4"};
@@ -209,41 +219,53 @@ public class ListarViajesActivity extends BaseActivity {
                 .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         //a item le sumo 1 ya que comienza en 0
-                        int cant= item + 1;
-
-                        if (cantLugares>item){
+                        int cant_a_reservar= item + 1;
+                        if (cantLugares>=cant_a_reservar){
                             try {
                                 FirebaseAuth auth = FirebaseAuth.getInstance();
                                 FirebaseUser user = auth.getCurrentUser();
+                                String id_user = user.getUid();
+                                viaje.setLugares(cantLugares-cant_a_reservar);
+                                Map<String, Integer> suscriptos = viaje.getSuscriptos();
 
-                                viaje.setPasajeros(cantLugares-cant);
-                                viaje.getSuscriptos().add(user.getEmail());
+                                if (suscriptos == null) {
+                                    suscriptos = new HashMap<String, Integer>();
+                                    viaje.setSuscriptos(suscriptos);
+                                }
+                                //Agrego usuario y cantidad de reservas a la lista de suscritos del viaje
+                                if (suscriptos.containsKey(id_user)){
+                                    //El usuario ya tenia reservas en este viaje, las sumo
+                                    int reserva_anterior = suscriptos.get(id_user);
+                                    cant_a_reservar += reserva_anterior;
+                                }
+                                suscriptos.put(id_user, cant_a_reservar);
+
                             } catch (NullPointerException e) {
                                 // Google Sign In failed, update UI appropriately
                                 Log.w("Suscripcion", "fallo ", e);
                             }
 
-
-                            //TODO Aca faltaria agregar cant de suscripciones a viaje al usuario---------
                             //Editar el viaje para agregar al nuevo suscripto
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/" + key , viaje);
                             mDataBase.updateChildren(childUpdates);
 
-                            Snackbar.make(findViewById(R.id.listar_layout), cant + " lugares reservados", Snackbar.LENGTH_INDEFINITE)
+                            //mostrar cartel de reservacion de lugares
+                            Snackbar.make(findViewById(R.id.listar_layout), cant_a_reservar + " lugares reservados", Snackbar.LENGTH_INDEFINITE)
                                     .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
                                     .setAction("Aceptar", new View.OnClickListener() {
                                         public void onClick(View view) {
 
                                         }
                                     })
-                            .show();
+                                    .show();
                         }
                         else{
+                            //mostrar cartel de lugares insuficientes
                             Snackbar.make(findViewById(R.id.listar_layout), "No hay suficientes lugares!", Snackbar.LENGTH_INDEFINITE)
                                     .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
                                     .setAction("Aceptar", new View.OnClickListener() {
-                                       public void onClick(View view) {
+                                        public void onClick(View view) {
 
                                         }
                                     })
@@ -258,8 +280,50 @@ public class ListarViajesActivity extends BaseActivity {
                         dialog.cancel();
                     }
                 });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void desuscribirUsuario(Viaje v, String k) {
+        Log.i("DESUSCRIBIR", "LLEGUE");
+        final Viaje viaje = v;
+        final String key = k; //Clave del viaje en bd para luego modificarlo
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        String id_user = user.getUid();
+
+        try {
+            Map<String, Integer> suscriptos = viaje.getSuscriptos();
+            Log.i("DESUSCRIBIR", "obtuve suscriptos");
+            if (suscriptos.containsKey(id_user)) {
+                //obtengo la cantidad de reservas que realizo el usuario para este viaje
+                int cant_reservados = suscriptos.get(id_user);
+                Log.i("DESUSCRIBIR", "cant de reservas: "+cant_reservados);
+                //devuelvo los lugares al viaje
+                viaje.setLugares(viaje.getLugares() + cant_reservados);
+                //elimino el usuario de la lista de suscritos del viaje
+                suscriptos.remove(id_user);
+                // TODO viaje.setSuscriptos(suscriptos);
+            }
+        } catch (NullPointerException e) {
+            // Google Sign In failed, update UI appropriately
+            Log.e("DESUSCRIBIR", "fallo ", e);
+        }
+        //Editar el viaje para eliminar el suscripto
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + key, viaje);
+        mDataBase.updateChildren(childUpdates);
+
+        //Mostrar mensaje al usuario
+        Snackbar.make(findViewById(R.id.listar_layout), "Desuscrito del viaje!", Snackbar.LENGTH_INDEFINITE)
+                .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
+                .setAction("Aceptar", new View.OnClickListener() {
+                    public void onClick(View view) {
+
+                    }
+                })
+                .show();
     }
 
     protected void onDestroy() {
@@ -299,7 +363,6 @@ public class ListarViajesActivity extends BaseActivity {
 
         botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("MSG", "Voy a guardar los cambios");
                 //guardarCambios(key, lblDireccion.getText(), lblFecha.getText(), lblHora.getText());
 
                 viaje.setDireccion(lblDireccion.getText().toString());

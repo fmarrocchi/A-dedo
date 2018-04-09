@@ -65,8 +65,7 @@
                     android:id="@+id/direccion_autocomplete_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                    />
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
             </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

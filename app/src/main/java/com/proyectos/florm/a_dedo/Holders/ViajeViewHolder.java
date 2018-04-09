@@ -9,7 +9,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.R;
@@ -41,9 +40,9 @@ import com.proyectos.florm.a_dedo.R;
             return view;
         }
 
-        public void setSalida(String salida) {
-            TextView field = view.findViewById(R.id.lblSalida);
-            field.setText(salida);
+        public void setOrigen(String origen) {
+            TextView field = view.findViewById(R.id.lblOrigen);
+            field.setText(origen);
         }
 
         public void setFecha(String fecha) {
@@ -56,9 +55,9 @@ import com.proyectos.florm.a_dedo.R;
             field.setText(hora);
         }
 
-        public void setPasajeros(String pasajeros) {
-            TextView field = (TextView) view.findViewById(R.id.lblPasajeros);
-            field.setText(pasajeros);
+        public void setLugares(String lugares) {
+            TextView field = (TextView) view.findViewById(R.id.lblLugares);
+            field.setText(lugares);
         }
 
         public void setInformacion(String informacion) {
@@ -81,21 +80,21 @@ import com.proyectos.florm.a_dedo.R;
 
             //Agregamos un ValueEventListener para que los cambios que se hagan en la base de datos se reflejen en la aplicacion
             myRef.addValueEventListener(new ValueEventListener() {
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //leeremos un objeto de tipo Usuario
-                    GenericTypeIndicator<User> u = new GenericTypeIndicator<User>() { };
+                    User user = dataSnapshot.getValue(User.class);
 
-                    //User user = dataSnapshot.getValue(u);
+                    Log.i("USER ES", user.toString());
 
-                    nombre.setText(dataSnapshot.child("nombre").getValue().toString());
-                    tel.setText(dataSnapshot.child("telefono").getValue().toString());
+                 //   nombre.setText(user.getNombre());
+                  //  tel.setText(user.getTelefono());
                     // foto.setText(mDataBase.child(conductor).child("foto").toString());
 
                 }
-
                 public void onCancelled(DatabaseError error) {
                     Log.e("ERROR FIREBASE", error.getMessage());
                 }
+
             });
         }
 

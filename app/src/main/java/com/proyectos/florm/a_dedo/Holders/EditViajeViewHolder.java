@@ -63,9 +63,9 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         return view;
     }
 
-    public void setSalida(String salida) {
-        TextView field = view.findViewById(R.id.lblSalida);
-        field.setText(salida);
+    public void setOrigen(String origen) {
+        TextView field = view.findViewById(R.id.lblOrigen);
+        field.setText(origen);
     }
 
     public void setFecha(String fecha) {
@@ -80,9 +80,9 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         lblDireccion.setText(direccion);
     }
 
-    public void setPasajeros(String pasajeros) {
-        TextView field = (TextView) view.findViewById(R.id.lblPasajeros);
-        field.setText(pasajeros);
+    public void setLugares(String lugares) {
+        TextView field = (TextView) view.findViewById(R.id.lblLugares);
+        field.setText(lugares);
     }
 
     public void setInformacion(String informacion) {
