@@ -10,11 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.proyectos.florm.a_dedo.Holders.EditViajeViewHolder;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 import java.util.HashMap;
@@ -87,8 +92,8 @@ public class ListarViajesActivity extends BaseActivity {
         contViajes=0;
         String conductor = getIntent().getExtras().getString("conductor");
         FirebaseRecyclerAdapter adapter =
-                new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, ViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
-                    public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
+                new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
+                    public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
                             contViajes++;
 
@@ -97,13 +102,27 @@ public class ListarViajesActivity extends BaseActivity {
                             viajeViewHolder.setFecha(" " + viaje.getFecha());
                             viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
                             viajeViewHolder.setPasajeros(" " + viaje.getPasajeros());
-                            //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TIRA NULL POINTER EXCEPTION ACA NO SE PQ
+                            viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
+                            //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TODO TIRA NULL POINTER EXCEPTION ACA NO SE PQ
 
                             final String list_viaje_id  = getRef(position).getKey();
 
-                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+//                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+//                                public void onClick(View v) {
+//                                    viajeViewHolder.masInfo();
+//                                }
+//                            });
+
+                            viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
-                                    viajeViewHolder.masInfo();
+                                    editarViaje(viajeViewHolder, viaje, itemId);
+
+                                }
+                            });
+
+                            viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    eliminarViaje(itemId);
                                 }
                             });
                     }
@@ -258,6 +277,64 @@ public class ListarViajesActivity extends BaseActivity {
             startActivity(new Intent(ListarViajesActivity.this, SignInActivity.class));
         }
     }
+
+    public void editarViaje(EditViajeViewHolder viajeViewHolder, Viaje v, String k){
+        final EditText lblDireccion = viajeViewHolder.getLblDireccion();
+        final EditText lblHora = viajeViewHolder.getLblHora();
+        final EditText lblFecha = viajeViewHolder.getLblFecha();
+        final EditText lblInfo = viajeViewHolder.getLblInfo();
+        final String key = k;
+        final Viaje viaje = v;
+
+        final Button botonGuardar = viajeViewHolder.getBotonGuardar();
+        final Button botonEditar = viajeViewHolder.getBotonEditar();
+
+        lblDireccion.setEnabled(true);
+        lblInfo.setEnabled(true);
+        lblHora.setEnabled(true);
+        lblHora.setClickable(true);
+        lblFecha.setEnabled(true);
+        botonGuardar.setVisibility(View.VISIBLE);
+        botonEditar.setEnabled(false);
+
+        botonGuardar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d("MSG", "Voy a guardar los cambios");
+                //guardarCambios(key, lblDireccion.getText(), lblFecha.getText(), lblHora.getText());
+
+                viaje.setDireccion(lblDireccion.getText().toString());
+                viaje.setHora(lblHora.getText().toString());
+                viaje.setFecha(lblFecha.getText().toString());
+                viaje.setInformacion(lblInfo.getText().toString());
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/" + key , viaje);
+                mDataBase.updateChildren(childUpdates);
+
+                lblDireccion.setEnabled(false);
+                lblInfo.setEnabled(false);
+                lblHora.setEnabled(false);
+                lblFecha.setEnabled(false);
+                botonGuardar.setVisibility(View.INVISIBLE);
+                botonEditar.setEnabled(true);
+                lblHora.setClickable(false);
+
+                //TODO mandar mails para avisar a los pasajeros
+
+            }
+        });
+    }
+
+    public void eliminarViaje(String key){
+        //mDataBase.child("viajes").child(key).setValue(null); //TODO ARREGLAR ESTO NO SE PQ NO ANDA
+
+        //TODO mandar mails para avisar a los pasajeros
+    }
+
+
+
+
+
 
 
 }

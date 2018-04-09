@@ -1,11 +1,12 @@
 package com.proyectos.florm.a_dedo.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Viaje {
+public class Viaje implements Serializable{
     private String destino;
     private String salida;
     private String hora;
