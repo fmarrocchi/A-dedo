@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,9 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.proyectos.florm.a_dedo.Models.User;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SignInGoogleActivity extends BaseActivity {
 
@@ -52,7 +47,6 @@ public class SignInGoogleActivity extends BaseActivity {
 
         signInGoogle();
     }
-
 
     private void signInGoogle(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -148,25 +142,4 @@ public class SignInGoogleActivity extends BaseActivity {
             }
         });
     }
-
-    public AlertDialog createSimpleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SignInGoogleActivity.this);
-        Log.i("Dialog", "cree");
-        builder.setTitle("Titulo")
-                .setMessage("El Mensaje para el usuario")
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                           public void onClick(DialogInterface dialog, int which) {
-                                Log.i("Alert dialog", "Aceptar");
-                            }
-                        })
-                .setNegativeButton("CANCELAR",
-                        new DialogInterface.OnClickListener() {
-                           public void onClick(DialogInterface dialog, int which) {
-                               Log.i("Alert dialog", "Cancelar");
-                            }
-                        });
-        return builder.create();
-    }
-
 }

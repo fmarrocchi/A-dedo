@@ -175,13 +175,18 @@ public class MainActivity extends BaseActivity
         referenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                if (user != null && user.getTelefono() == null){
-                    //Dialogo para pedir ingresar numero de telefono
-                    AlertDialog.Builder dialog = telefonoDialog(user);
-                    dialog.show();
-                }
+                if (user == null)
+                    Log.i("TELEFONO","usuario nulo");
                 else
-                Log.i("TELEFONO","no es nulo");
+                    if (user.getTelefono() == null){
+                        Log.i("TELEFONO","pido telefono");
+                        //Dialogo para pedir ingresar numero de telefono
+                        AlertDialog.Builder dialog = telefonoDialog(user);
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }
+                    else
+                        Log.i("TELEFONO","no es nulo");
 
             }
             public void onCancelled(DatabaseError databaseError) {      }

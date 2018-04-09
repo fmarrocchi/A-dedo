@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
@@ -31,7 +30,6 @@ public class ViajeActivity extends BaseActivity  {
     private DatabaseReference mDatabase;
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
-    private ProgressBar progressBar;
     private EditText inputInfo, inputTel, inputLocalidad, inputHora, inputFecha;
     private Spinner inputCantPasajerosSpinner;
     private Button mSubmitButton;
@@ -75,8 +73,6 @@ public class ViajeActivity extends BaseActivity  {
         inputFecha = findViewById(R.id.etDate);
         inputHora = findViewById(R.id.etTime);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
         //Crear spinner con los datos posibles para CantPasajeros
         Spinner mCantPasajerosSpinner = findViewById(R.id.spinner_pasajeros);
         Integer[] cantPasajeros = {1, 2, 3, 4};
@@ -106,11 +102,9 @@ public class ViajeActivity extends BaseActivity  {
         destinoAutocomplFrag.setHint("Hacia");
 
         destinoAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
             public void onPlaceSelected(Place place) {
                 destino = place.getName().toString();
             }
-            @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
                 Log.i("ERROR", "An error occurred: " + status);
@@ -126,8 +120,7 @@ public class ViajeActivity extends BaseActivity  {
             public void onPlaceSelected(Place place) {
                 direccion = place.getName().toString();
             }
-            @Override
-            public void onError(Status status) {
+             public void onError(Status status) {
                 // TODO: Handle the error.
                 Log.i("ERROR", "An error occurred: " + status);
             }
@@ -145,7 +138,7 @@ public class ViajeActivity extends BaseActivity  {
                 if(error == null){
                     Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_SHORT).show();
                     //Creo con exito y vuelvo a la actividad anterior
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressDialog();
                     onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
                 }
                 else{
@@ -182,13 +175,13 @@ public class ViajeActivity extends BaseActivity  {
         // Deshabilitar el boton para que no se cree mas de una vez
         setEditingEnabled(false);
 
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressDialog();
         createViaje(usuario, hora, fecha, pasajeros, informacion);
         setEditingEnabled(true);
     }
 
     private void setEditingEnabled(boolean enabled) {
-        // ver como hacer esto con un fragmento
+        // TODO ver como hacer esto con un fragmento
 //        inputDestino.setEnabled(enabled);
 //        inputOrigen.setEnabled(enabled);
         inputCantPasajerosSpinner.setEnabled(enabled);

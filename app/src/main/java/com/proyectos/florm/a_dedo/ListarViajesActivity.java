@@ -190,7 +190,7 @@ public class ListarViajesActivity extends BaseActivity {
 
         recycler.setAlpha(0.90f); //Dar transparencia
         recycler.setAdapter(adapter);
-        if (contViajes == 0) {
+               if (contViajes == 0) {
             Snackbar.make(findViewById(R.id.lytContenedor), "Lo sentimos, aún no hay viajes que coincidan con su búsqueda.", Snackbar.LENGTH_LONG).show();
         }
 
@@ -325,16 +325,36 @@ public class ListarViajesActivity extends BaseActivity {
         });
     }
 
-    public void eliminarViaje(String key){
-        //mDataBase.child("viajes").child(key).setValue(null); //TODO ARREGLAR ESTO NO SE PQ NO ANDA
+     public void eliminarViaje(String k){
+        final String key = k;
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+
+        builder.setMessage("¿Está seguro de que quiere eliminar este viaje?")
+                .setTitle("Confirmación")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.i("Dialogos", "confirmado.");
+                        //eliminar el viaje
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/" + key , null);
+                        mDataBase.updateChildren(childUpdates);
+
+                        Snackbar.make(findViewById(R.id.lytContenedor), "Su viaje ha sido eliminado con éxito.", Snackbar.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.i("Dialogos", "Confirmacion Cancelada.");
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
         //TODO mandar mails para avisar a los pasajeros
     }
-
-
-
-
-
 
 
 }

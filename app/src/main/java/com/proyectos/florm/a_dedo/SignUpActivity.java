@@ -23,11 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.User;
 
 public class SignUpActivity extends BaseActivity {
-
     private EditText inputEmail, inputPassword, inputPasswordConfirm, inputNombre, inputApellido, inputFoto, inputTel;
     private Button btnSignIn, btnSignUp;
     private FirebaseAuth auth;
-
     private DatabaseReference mDatabase;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +54,14 @@ public class SignUpActivity extends BaseActivity {
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String mail = inputEmail.getText().toString().trim();
+                final String mail = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
                 // TODO volver a ingresar password y comaprar
                 final String nombre = inputNombre.getText().toString().trim();
                 final String apellido = inputApellido.getText().toString().trim();
-                String foto = inputFoto.getText().toString().trim();
-                String tel = inputTel.getText().toString().trim();
+                final String foto = inputFoto.getText().toString().trim();
+                final String tel = inputTel.getText().toString().trim();
 
                 if (TextUtils.isEmpty(mail)) {
                     Toast.makeText(getApplicationContext(), "Ingrese email", Toast.LENGTH_SHORT).show();
@@ -93,34 +91,16 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "Ingresar telefono!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!URLUtil.isValidUrl(foto))
-                    foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
+              //TODO insertar foto y mostrarla
+                /* if (!URLUtil.isValidUrl(foto))
+                    foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";*/
 
                 if (!password.equals(passwordConfirm)){
                     Toast.makeText(getApplicationContext(), "Las contraseñas no coinciden!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 showProgressDialog();
 
-                //-------------Crear nuevo User en la BD------------------
-
-                //Instanciacion de la base de datos
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                String key = mDatabase.child("usuarios").push().getKey();
-
-                User user = new User(mail, nombre+" "+apellido, tel, foto);
-                mDatabase.child("usuarios").child(key).setValue(user, new DatabaseReference.CompletionListener(){
-                    //El segundo parametro es para recibir un mensaje si hubo error en el setValue
-                    public void onComplete(DatabaseError error, DatabaseReference ref) {
-                        if(error == null){
-                            Log.i("Success", "Creado con exito");
-                        }
-                        else{
-                            Log.e("Error", "Error: " + error.getMessage());
-                        }
-                    }
-                });
                 //create authentication
                 auth.createUserWithEmailAndPassword(mail, password)
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
@@ -132,17 +112,37 @@ public class SignUpActivity extends BaseActivity {
                                 }
                                 else {
                                     FirebaseUser user = auth.getCurrentUser();
-
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(nombre+" "+ apellido).build();
-
                                     user.updateProfile(profileUpdates);
+                                    Log.i("USER","agregue nombre");
+
+                                    crearUserBD(mail, nombre+" "+apellido, tel, foto);
+
                                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }
                         });
+            }
+        });
+    }
 
+    private void crearUserBD(String mail, String nombre, String tel, String foto){
+         //Instanciacion de la base de datos
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        String key = auth.getCurrentUser().getUid();
+
+        User user = new User(mail, nombre, tel, foto);
+        mDatabase.child("usuarios").child(key).setValue(user, new DatabaseReference.CompletionListener(){
+            //El segundo parametro es para recibir un mensaje si hubo error en el setValue
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if(error == null){
+                    Log.i("Success", "Creado con exito");
+                }
+                else{
+                    Log.e("Error", "Error: " + error.getMessage());
+                }
             }
         });
     }

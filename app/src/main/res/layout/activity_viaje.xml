@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:layout_marginHorizontal="25dp"
     tools:openDrawer="start">
 
     <ScrollView
@@ -26,12 +27,12 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_gravity="center"
                 android:textSize="30dp"
+                android:layout_marginTop="25dp"
                 android:textStyle="bold" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
                 <fragment
@@ -45,7 +46,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
                 <fragment
@@ -59,7 +59,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:background="@color/white"
                 android:layout_marginBottom="5dp">
                 <fragment
@@ -83,6 +82,7 @@
                 android:inputType="date"
                 android:focusable="false"
                 android:clickable="true"
+                android:onClick="showDatePickerDialog"
                 android:maxLines="1"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -107,26 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="16dp"
-                android:background="@color/white"
-                android:layout_marginRight="16dp"
                 android:orientation="horizontal">
-                <Spinner
-                    android:id="@+id/spinner_equipaje"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Lugar equipaje" />
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="16dp"
-                android:background="@color/white"
-                android:layout_marginRight="16dp"
-                android:orientation="horizontal">
-
                 <EditText
                     android:id="@+id/textLugaresDisp"
                     android:layout_width="280dp"
@@ -146,8 +127,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:background="@color/white"
                 android:layout_marginBottom="5dp">
                 <EditText
                     android:id="@+id/field_info_adicional"
@@ -162,24 +141,15 @@
             <Button
                 android:id="@+id/submit_post"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark"
                 android:layout_gravity="bottom|center"
                 android:enabled="true"
                 android:text=" Ofrecer viaje "
+                android:layout_marginTop="15dp"
                 android:onClick="crear"/>
-
         </LinearLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone" />
-
 </android.support.v4.widget.DrawerLayout>
 
