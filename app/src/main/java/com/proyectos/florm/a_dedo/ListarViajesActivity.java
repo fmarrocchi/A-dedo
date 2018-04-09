@@ -189,7 +189,6 @@ public class ListarViajesActivity extends BaseActivity {
         builder.setTitle("¿Cuantos pasajeros son?")
                 .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
-                        Log.i("Dialogos", "Opción elegida: " + items[item]);
                         //a item le sumo 1 ya que comienza en 0
                         int cant= item + 1;
 
@@ -206,11 +205,9 @@ public class ListarViajesActivity extends BaseActivity {
                             }
 
 
-                //--------TODO Aca faltaria agregar cant de suscripciones a viaje al usuario---------
+                            //TODO Aca faltaria agregar cant de suscripciones a viaje al usuario---------
                             //Editar el viaje para agregar al nuevo suscripto
-                            //Map<String, Object> viajeNuevo = viaje.toMap();
                             Map<String, Object> childUpdates = new HashMap<>();
-                            //childUpdates.put("/" + key , viajeNuevo);
                             childUpdates.put("/" + key , viaje);
                             mDataBase.updateChildren(childUpdates);
 

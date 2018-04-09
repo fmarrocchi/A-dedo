@@ -91,11 +91,9 @@ public class ViajeActivity extends BaseActivity  {
         origenAutocomplFrag.setHint("Desde");
 
         origenAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
             public void onPlaceSelected(Place place) {
                 origen = place.getName().toString();
             }
-            @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
                 Log.i("ERROR", "An error occurred: " + status);
@@ -125,7 +123,6 @@ public class ViajeActivity extends BaseActivity  {
         direccionAutocomplFrag.setHint("Dirección de salida");
 
         direccionAutocomplFrag.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
             public void onPlaceSelected(Place place) {
                 direccion = place.getName().toString();
             }
@@ -166,16 +163,6 @@ public class ViajeActivity extends BaseActivity  {
         final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
         String informacion = inputInfo.getText().toString();
 
-//        // Destino is required
-//        if (TextUtils.isEmpty(destino)) {
-//            destinoAutocomplFrag.setError(REQUIRED);
-//            return;
-//        }
-//        // Salida is required
-//        if (TextUtils.isEmpty(origen)) {
-//            origenAutocomplFrag.setError(REQUIRED);
-//            return;
-//        }
         // Hora is required
         if (TextUtils.isEmpty(hora)) {
             inputHora.setError(REQUIRED);
@@ -187,12 +174,6 @@ public class ViajeActivity extends BaseActivity  {
             return;
         }
 
-//        // Direccion is required
-//        if (TextUtils.isEmpty(direccion)) {
-//            inputDireccion.setError(REQUIRED);
-//            return;
-//        }
-
         //Si no hay informacion extra le asigno un guion (no es campo requerido)
         if (TextUtils.isEmpty(informacion)) {
            informacion = " No hay información adicional.";
@@ -202,7 +183,6 @@ public class ViajeActivity extends BaseActivity  {
         setEditingEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
-        Log.d("mgs", "antes de crear viaje");
         createViaje(usuario, hora, fecha, pasajeros, informacion);
         setEditingEnabled(true);
     }
@@ -222,15 +202,6 @@ public class ViajeActivity extends BaseActivity  {
         }
     }
 
-//    //Oyente botones del widget de fecha y hora
-//    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.submit_post:
-//                submitPost();
-//                break;
-//        }
-//    }
-//
     public void crear(View view){
         submitPost();
     }

@@ -54,6 +54,7 @@
 
         <activity android:name=".SearchActivity" />
         <activity android:name=".EditViajeActivity"></activity>
+        <activity android:name=".SignInGoogleActivity"></activity>
     </application>
 
 </manifest>

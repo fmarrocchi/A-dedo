@@ -170,15 +170,6 @@
                 android:enabled="true"
                 android:text=" Ofrecer viaje "
                 android:onClick="crear"/>
-            <Button
-                android:id="@+id/unboton"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:layout_gravity="bottom|center"
-                android:enabled="true"
-                android:text=" Soy un boton re boludo " />
 
         </LinearLayout>
     </ScrollView>

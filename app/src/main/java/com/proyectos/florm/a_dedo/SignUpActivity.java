@@ -10,7 +10,6 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,11 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.User;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BaseActivity {
 
-    private EditText inputEmail, inputPassword, inputNombre, inputApellido, inputDireccion, inputLocalidad, inputFoto, inputTel;
+    private EditText inputEmail, inputPassword, inputNombre, inputApellido, inputFoto, inputTel;
     private Button btnSignIn, btnSignUp;
-    private ProgressBar progressBar;
     private FirebaseAuth auth;
 
     private DatabaseReference mDatabase;
@@ -42,11 +40,10 @@ public class SignUpActivity extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);
-        inputNombre = (EditText) findViewById(R.id.nombre);
-        inputApellido = (EditText) findViewById(R.id.apellido);
-        inputFoto = (EditText) findViewById(R.id.foto);
-
-        progressBar = findViewById(R.id.progressBar);
+        inputNombre = findViewById(R.id.nombre);
+        inputApellido = findViewById(R.id.apellido);
+        inputFoto = findViewById(R.id.foto);
+        inputTel = findViewById(R.id.telefono);
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
@@ -56,13 +53,11 @@ public class SignUpActivity extends AppCompatActivity {
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 String mail = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                // TODO volver a ingresar password y comaprar
                 String nombre = inputNombre.getText().toString().trim();
                 String apellido = inputApellido.getText().toString().trim();
-                String direccion = inputDireccion.getText().toString().trim();
-                String localidad = inputLocalidad.getText().toString().trim();
                 String foto = inputFoto.getText().toString().trim();
                 String tel = inputTel.getText().toString().trim();
 
@@ -86,27 +81,23 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Ingresar apellido!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (TextUtils.isEmpty(direccion)) {
-                    Toast.makeText(getApplicationContext(), "Ingresar direccion!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(tel)) {
+                    Toast.makeText(getApplicationContext(), "Ingresar telefono!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (TextUtils.isEmpty(localidad)) {
-                    Toast.makeText(getApplicationContext(), "Ingresar localidad!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                progressBar.setVisibility(View.VISIBLE);
-
-
-                //-------------Crear nuevo User en la BD------------------
-                //Instanciacion de la base de datos
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-
                 if (!URLUtil.isValidUrl(foto))
                     foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";
 
+                showProgressDialog();
+
+                //-------------Crear nuevo User en la BD------------------
+
+                //Instanciacion de la base de datos
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+                String key = mDatabase.child("usuarios").push().getKey();
+
                 User user = new User(mail, nombre+" "+apellido, tel, foto);
-                mDatabase.child("usuarios").child(mail).setValue(user, new DatabaseReference.CompletionListener(){
+                mDatabase.child("usuarios").child(key).setValue(user, new DatabaseReference.CompletionListener(){
                     //El segundo parametro es para recibir un mensaje si hubo error en el setValue
                     public void onComplete(DatabaseError error, DatabaseReference ref) {
                         if(error == null){
@@ -122,10 +113,7 @@ public class SignUpActivity extends AppCompatActivity {
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignUpActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
+                                hideProgressDialog();
                                 if (!task.isSuccessful()) {
                                     Toast.makeText(SignUpActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
@@ -138,10 +126,5 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    protected void onResume() {
-        super.onResume();
-        progressBar.setVisibility(View.GONE);
     }
 }
