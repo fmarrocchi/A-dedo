@@ -63,7 +63,6 @@
             android:maxLines="1"
             android:singleLine="true" />
 
-
         <Button
             android:id="@+id/send"
             style="?android:textAppearanceSmall"
@@ -171,6 +170,24 @@
                 android:textColor="@android:color/darker_gray"
                 android:textColorHint="@android:color/darker_gray"
                 android:enabled="false"/>
+
+        <ImageView
+            android:id="@+id/photoViewer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/boton_ovalado" />
+
+        <Button
+            android:id="@+id/photoButton"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="Seleccionar foto"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:onClick="mostrarDialog"/>
 
         <Button
             android:id="@+id/changeEmail"

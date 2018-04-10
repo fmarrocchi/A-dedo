@@ -3,7 +3,12 @@ package com.proyectos.florm.a_dedo;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
@@ -23,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.Viaje;
+
+import java.io.File;
 import java.util.Calendar;
 
 public class ViajeActivity extends BaseActivity  {
@@ -53,6 +61,7 @@ public class ViajeActivity extends BaseActivity  {
     //Variables para obtener la hora hora
     final int hora = c.get(Calendar.HOUR_OF_DAY);
     final int minuto = c.get(Calendar.MINUTE);
+
 
     //Asocia variables del formulario para obtener los datos ingresados para crear un viaje
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +134,7 @@ public class ViajeActivity extends BaseActivity  {
                 Log.i("ERROR", "An error occurred: " + status);
             }
         });
+
     }
 
     //Crea un viaje llamando al constructor de la clase viaje y luego lo inserta en la base de datos
@@ -225,4 +235,8 @@ public class ViajeActivity extends BaseActivity  {
     private String twoDigits(int n) {
         return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
+
+
+
+
 }

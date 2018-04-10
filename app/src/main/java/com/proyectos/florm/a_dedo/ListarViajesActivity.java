@@ -382,7 +382,25 @@ public class ListarViajesActivity extends BaseActivity {
                 botonEditar.setEnabled(true);
                 lblHora.setClickable(false);
 
-                //TODO mandar mails para avisar a los pasajeros
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+
+                builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
+                        .setTitle("Confirmación")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String subject = "Modificación de viaje";
+                                String message = "Hola. Te informamos que se ha efectuado una modificacion en un viaje al que te has suscripto.";
+                                String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
+                                sendEmails(subject, message, to);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             }
         });
@@ -417,6 +435,38 @@ public class ListarViajesActivity extends BaseActivity {
         dialog.show();
 
         //TODO mandar mails para avisar a los pasajeros
+         final AlertDialog.Builder builder2 = new AlertDialog.Builder(ListarViajesActivity.this);
+
+         builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
+                 .setTitle("Confirmación")
+                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int id) {
+                         String subject = "Cancelación de viaje";
+                         String message = "Hola. Te informamos que se ha cancelado un viaje al que te has suscripto.";
+                         String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
+                         sendEmails(subject, message, to);
+                     }
+                 })
+                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int id) {
+                         dialog.cancel();
+                     }
+                 });
+         AlertDialog dialog2 = builder2.create();
+         dialog.show();
+    }
+
+    public void sendEmails(String subject, String message, String to) {
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+        email.putExtra(Intent.EXTRA_SUBJECT, subject);
+        email.putExtra(Intent.EXTRA_TEXT, message);
+
+        //need this to prompts email client only
+        email.setType("message/rfc822");
+
+        startActivity(Intent.createChooser(email, "Seleccione un cliente de mail:"));
     }
 
 
