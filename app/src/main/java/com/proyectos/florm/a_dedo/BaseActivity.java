@@ -1,12 +1,8 @@
 package com.proyectos.florm.a_dedo;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -15,7 +11,7 @@ public class BaseActivity extends AppCompatActivity {
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setMessage("Cargando...");
             mProgressDialog.setIndeterminate(true);
         }
 

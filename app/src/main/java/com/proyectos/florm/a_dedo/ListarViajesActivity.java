@@ -8,11 +8,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +23,8 @@ import com.proyectos.florm.a_dedo.Holders.EditViajeViewHolder;
 import com.proyectos.florm.a_dedo.Holders.MisSuscripcionesViewHolder;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
 import com.proyectos.florm.a_dedo.Models.Viaje;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,21 +45,26 @@ public class ListarViajesActivity extends BaseActivity {
         setContentView(R.layout.activity_listar_viajes);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Volver atras con la barra de tareas
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mostrarViajes();
     }
 
     public FirebaseRecyclerAdapter adapterBuscar(){
+        contViajes=0;
         String origen = getIntent().getExtras().getString("origen");
         destino = getIntent().getExtras().getString("destino");
         fecha = getIntent().getExtras().getString("fecha");
-        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseRecyclerAdapter adapter =
                 new FirebaseRecyclerAdapter<Viaje, ViajeViewHolder>(Viaje.class, R.layout.listitem_viaje, ViajeViewHolder.class, mDataBase.orderByChild("origen").equalTo(origen)) {
                     public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha)) && (!viaje.getConductor().equals(usuario)) ) {
+                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha))) {
+                            contViajes++;
+
                             viajeViewHolder.setDestino(" " + viaje.getDestino());
                             viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                             viajeViewHolder.setFecha(" " + viaje.getFecha());
@@ -86,6 +93,7 @@ public class ListarViajesActivity extends BaseActivity {
         return adapter;
     }
 
+
     public FirebaseRecyclerAdapter adapterMisViajes(){
         contViajes=0;
         String conductor = getIntent().getExtras().getString("conductor");
@@ -93,17 +101,17 @@ public class ListarViajesActivity extends BaseActivity {
                 new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-                        contViajes++;
+                            contViajes++;
 
-                        viajeViewHolder.setOrigen(" " + viaje.getOrigen());
-                        viajeViewHolder.setDestino(" " + viaje.getDestino());
-                        viajeViewHolder.setFecha(" " + viaje.getFecha());
-                        viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                        viajeViewHolder.setLugares(" " + viaje.getLugares());
-                        viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
-                        //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TODO TIRA NULL POINTER EXCEPTION ACA NO SE PQ
+                            viajeViewHolder.setOrigen(" " + viaje.getOrigen());
+                            viajeViewHolder.setDestino(" " + viaje.getDestino());
+                            viajeViewHolder.setFecha(" " + viaje.getFecha());
+                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
+                            viajeViewHolder.setLugares(" " + viaje.getLugares());
+                            viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
+                            //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TODO TIRA NULL POINTER EXCEPTION ACA NO SE PQ
 
-                        final String list_viaje_id  = getRef(position).getKey();
+                            final String list_viaje_id  = getRef(position).getKey();
 
 //                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
 //                                public void onClick(View v) {
@@ -111,18 +119,18 @@ public class ListarViajesActivity extends BaseActivity {
 //                                }
 //                            });
 
-                        viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                editarViaje(viajeViewHolder, viaje, itemId);
+                            viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    editarViaje(viajeViewHolder, viaje, itemId);
 
-                            }
-                        });
+                                }
+                            });
 
-                        viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                eliminarViaje(itemId);
-                            }
-                        });
+                            viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    eliminarViaje(itemId);
+                                }
+                            });
                     }
                 };
 
@@ -186,13 +194,13 @@ public class ListarViajesActivity extends BaseActivity {
         if(opcion.equals("buscar"))
             adapter = adapterBuscar();
         else
-        if(opcion.equals("misviajes"))
-            adapter = adapterMisViajes();
-        else
-            if (opcion.equals("missuscripciones")){
-                Log.i("DESUSCRIBIR", "voy a llamar al adapter");
-                adapter = adapterMisSuscripciones();
-            }
+            if(opcion.equals("misviajes"))
+                adapter = adapterMisViajes();
+            else
+                if (opcion.equals("missuscripciones")){
+                    Log.i("DESUSCRIBIR", "voy a llamar al adapter");
+                    adapter = adapterMisSuscripciones();
+                }
 
 
         recycler.setAlpha(0.90f); //Dar transparencia
@@ -358,35 +366,50 @@ public class ListarViajesActivity extends BaseActivity {
 
         botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String direccion = lblDireccion.getText().toString();
-                String hora = lblHora.getText().toString();
-                String fecha = lblFecha.getText().toString();
-                String info = lblInfo.getText().toString();
+                //guardarCambios(key, lblDireccion.getText(), lblFecha.getText(), lblHora.getText());
 
-                //validar si hay cosas vacias
-                if (validar(direccion, fecha, hora)) {
-                    viaje.setDireccion(direccion);
-                    viaje.setHora(hora);
-                    viaje.setFecha(fecha);
-                    viaje.setInformacion(info);
+                viaje.setDireccion(lblDireccion.getText().toString());
+                viaje.setHora(lblHora.getText().toString());
+                viaje.setFecha(lblFecha.getText().toString());
+                viaje.setInformacion(lblInfo.getText().toString());
 
-                    Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/" + key, viaje);
-                    mDataBase.updateChildren(childUpdates);
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/" + key , viaje);
+                mDataBase.updateChildren(childUpdates);
 
-                    lblDireccion.setEnabled(false);
-                    lblInfo.setEnabled(false);
-                    lblHora.setEnabled(false);
-                    lblFecha.setEnabled(false);
-                    botonGuardar.setVisibility(View.INVISIBLE);
-                    botonEditar.setEnabled(true);
-                    lblHora.setClickable(false);
-                }
+                lblDireccion.setEnabled(false);
+                lblInfo.setEnabled(false);
+                lblHora.setEnabled(false);
+                lblFecha.setEnabled(false);
+                botonGuardar.setVisibility(View.INVISIBLE);
+                botonEditar.setEnabled(true);
+                lblHora.setClickable(false);
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+
+                builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
+                        .setTitle("Confirmación")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String subject = "Modificación de viaje";
+                                String message = "Hola. Te informamos que se ha efectuado una modificacion en un viaje al que te has suscripto.";
+                                String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
+                                sendEmails(subject, message, to);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
     }
 
-    public void eliminarViaje(String k){
+     public void eliminarViaje(String k){
         final String key = k;
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
@@ -413,29 +436,40 @@ public class ListarViajesActivity extends BaseActivity {
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        //TODO mandar mails para avisar a los pasajeros
+         final AlertDialog.Builder builder2 = new AlertDialog.Builder(ListarViajesActivity.this);
+
+         builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
+                 .setTitle("Confirmación")
+                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int id) {
+                         String subject = "Cancelación de viaje";
+                         String message = "Hola. Te informamos que se ha cancelado un viaje al que te has suscripto.";
+                         String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
+                         sendEmails(subject, message, to);
+                     }
+                 })
+                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int id) {
+                         dialog.cancel();
+                     }
+                 });
+         AlertDialog dialog2 = builder2.create();
+         dialog.show();
     }
 
-    public boolean validar(String direccion, String fecha, String hora) {
-        boolean esValido= true;
-        // Fecha is required
-        if (TextUtils.isEmpty(fecha)) {
-            esValido= false;
-        }
+    public void sendEmails(String subject, String message, String to) {
 
-        if (TextUtils.isEmpty(hora)) {
-            esValido= false;
-        }
-        if (TextUtils.isEmpty(direccion)) {
-            esValido= false;
-        }
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+        email.putExtra(Intent.EXTRA_SUBJECT, subject);
+        email.putExtra(Intent.EXTRA_TEXT, message);
 
-        if(!esValido){
-            AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
-            builder.setMessage("Por favor, complete fecha, hora y direccion.").setTitle("Error");
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        return esValido;
+        //need this to prompts email client only
+        email.setType("message/rfc822");
+
+        startActivity(Intent.createChooser(email, "Seleccione un cliente de mail:"));
     }
 
 

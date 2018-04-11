@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.proyectos.florm.a_dedo.Models.User;
 import android.support.design.widget.Snackbar;
+import android.widget.Toolbar;
 
 
 public class SignInActivity extends BaseActivity implements
@@ -48,7 +49,7 @@ public class SignInActivity extends BaseActivity implements
 
         inputEmail = findViewById(R.id.email);
         inputEmail.setAlpha(0.75f);
-        inputPassword = (EditText) findViewById(R.id.password);
+        inputPassword = findViewById(R.id.password);
         inputPassword.setAlpha(0.75f);
 
         //Listeners de botones
@@ -61,6 +62,7 @@ public class SignInActivity extends BaseActivity implements
         btnSignInGoogle.setAlpha(0.65f);
 
         auth = FirebaseAuth.getInstance();
+
     }
 
     public void onClick(View v) {
