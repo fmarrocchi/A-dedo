@@ -101,4 +101,3 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
 //
 //    }
 }
-

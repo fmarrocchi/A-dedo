@@ -54,7 +54,6 @@
             android:value="AIzaSyCtyKuJPBt_j9PSFji-LgUfI0rtFhDZkiI" />
 
         <activity android:name=".SearchActivity" />
-        <activity android:name=".EditViajeActivity" />
         <activity android:name=".SignInGoogleActivity" />
     </application>
 

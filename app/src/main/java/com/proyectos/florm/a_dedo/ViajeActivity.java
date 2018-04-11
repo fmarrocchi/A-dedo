@@ -3,12 +3,7 @@ package com.proyectos.florm.a_dedo;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
@@ -30,15 +24,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 
-import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-public class ViajeActivity extends BaseActivity  {
+public class ViajeActivity extends BaseActivity{
 
     private DatabaseReference mDatabase;
     //Variable para guardar mail identificador del usuario actual
     private String usuario;
-    private EditText inputInfo, inputTel, inputLocalidad, inputHora, inputFecha;
+    private EditText inputInfo, inputHora, inputFecha;
     private Spinner inputCantPasajerosSpinner;
     private Button mSubmitButton;
     private PlaceAutocompleteFragment origenAutocomplFrag, destinoAutocomplFrag, direccionAutocomplFrag;
@@ -47,8 +44,6 @@ public class ViajeActivity extends BaseActivity  {
     private String origen;
     private String destino;
     private String direccion;
-
-    private static final String REQUIRED = "Required";
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -62,6 +57,7 @@ public class ViajeActivity extends BaseActivity  {
     final int hora = c.get(Calendar.HOUR_OF_DAY);
     final int minuto = c.get(Calendar.MINUTE);
 
+    int anioViaje, mesViaje, diaViaje, horaViaje, minViaje;
 
     //Asocia variables del formulario para obtener los datos ingresados para crear un viaje
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,28 +162,14 @@ public class ViajeActivity extends BaseActivity  {
         final Integer pasajeros = (Integer)inputCantPasajerosSpinner.getSelectedItem();
         String informacion = inputInfo.getText().toString();
 
-        // Hora is required
-        if (TextUtils.isEmpty(hora)) {
-            inputHora.setError(REQUIRED);
-            return;
-        }
-        // Fecha is required
-        if (TextUtils.isEmpty(fecha)) {
-            inputFecha.setError(REQUIRED);
-            return;
-        }
+        if(validar(hora, fecha, pasajeros, informacion)) {
+            // Deshabilitar el boton para que no se cree mas de una vez
+            setEditingEnabled(false);
 
-        //Si no hay informacion extra le asigno un guion (no es campo requerido)
-        if (TextUtils.isEmpty(informacion)) {
-           informacion = " No hay información adicional.";
+            showProgressDialog();
+            createViaje(usuario, hora, fecha, pasajeros, informacion);
+            setEditingEnabled(true);
         }
-
-        // Deshabilitar el boton para que no se cree mas de una vez
-        setEditingEnabled(false);
-
-        showProgressDialog();
-        createViaje(usuario, hora, fecha, pasajeros, informacion);
-        setEditingEnabled(true);
     }
 
     private void setEditingEnabled(boolean enabled) {
@@ -215,6 +197,7 @@ public class ViajeActivity extends BaseActivity  {
                 // +1 because january is zero
                 final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
                 inputFecha.setText(selectedDate);
+                anioViaje=year; diaViaje=day; mesViaje=month+1;
             }
         },anio, mes, dia);
         //Muestro el widget
@@ -226,6 +209,7 @@ public class ViajeActivity extends BaseActivity  {
             public void onTimeSet(TimePicker view, int hour, int minutes) {
                 final String selectedTime = twoDigits(hour) + ":" + twoDigits(minutes);
                 inputHora.setText(selectedTime);
+                horaViaje=hour; minViaje=minutes;
             }
         },hora, minuto, true);
         //Muestro el widget
@@ -236,7 +220,73 @@ public class ViajeActivity extends BaseActivity  {
         return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
 
+    public boolean validar(String hora, String fecha, Integer pasajeros, String informacion) {
+        boolean esValido= true;
+        // Hora is required
+        if (TextUtils.isEmpty(hora)) {
+            esValido= false;
+        }
+        // Fecha is required
+        if (TextUtils.isEmpty(fecha)) {
+            esValido= false;
+        }
 
+        //Valido que la fecha del viaje sea despues que hoy
+        Date fechaViaje = new Date(anioViaje, mesViaje, diaViaje);
+        fechaViaje.setHours(horaViaje); fechaViaje.setMinutes(minViaje);
+        Date hoy = diaDehoy();
+//        if(hoy.before(fechaViaje)){
+//            Log.d("ms", "La fecha del viaje "+ fechaViaje + " es anterior a hoy: " + hoy);
+//            AlertDialog.Builder builder = new AlertDialog.Builder(ViajeActivity.this);
+//            builder.setMessage("La fecha del viaje es anterior al dia de hoy. Por favor, elija otra fecha.").setTitle("Error");
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
+//            return false;
+//        }
 
+        //Si no hay informacion extra le asigno un guion (no es campo requerido)
+        if (TextUtils.isEmpty(informacion)) {
+            informacion = " No hay información adicional.";
+        }
 
+        if(pasajeros<-1 || pasajeros>4){
+            //inputCantPasajeros.setError
+            esValido= false;
+        }
+
+        if (TextUtils.isEmpty(origen)) {
+            //origenAutocomplFrag.
+            esValido= false;
+        }
+        if (TextUtils.isEmpty(destino)) {
+            //origenAutocomplFrag.
+            esValido= false;
+        }
+        if (TextUtils.isEmpty(direccion)) {
+            //origenAutocomplFrag.
+            esValido= false;
+        }
+
+        if(!esValido){
+            AlertDialog.Builder builder = new AlertDialog.Builder(ViajeActivity.this);
+            builder.setMessage("Por favor complete todos los campos requeridos.").setTitle("Error");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        return esValido;
+    }
+
+    public Date diaDehoy(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        Date date = new Date();
+
+        String fecha = dateFormat.format(date);
+        try {
+            date = dateFormat.parse(fecha);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return date;
+    }
 }

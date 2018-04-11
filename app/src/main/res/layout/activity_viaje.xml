@@ -82,7 +82,7 @@
                 android:focusable="false"
                 android:clickable="true"
                 android:onClick="showDatePickerDialog"
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

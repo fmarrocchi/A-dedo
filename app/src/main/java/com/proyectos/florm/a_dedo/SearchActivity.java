@@ -1,9 +1,11 @@
 package com.proyectos.florm.a_dedo;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -80,13 +83,38 @@ public class SearchActivity extends AppCompatActivity {
 
     public void buscar(View view){
         fecha = etPlannedDate.getText().toString();
-        Intent intent = new Intent(this, ListarViajesActivity.class);
-        intent.putExtra("origen", origen);
-        intent.putExtra("destino", destino);
-        intent.putExtra("fecha", fecha);
-        intent.putExtra("opcion", "buscar");
+        if(validar()) {
+            Intent intent = new Intent(this, ListarViajesActivity.class);
+            intent.putExtra("origen", origen);
+            intent.putExtra("destino", destino);
+            intent.putExtra("fecha", fecha);
+            intent.putExtra("opcion", "buscar");
 
-        startActivity(intent);
+            startActivity(intent);
+        }
+    }
+
+    public boolean validar() {
+        boolean esValido= true;
+        // Fecha is required
+        if (TextUtils.isEmpty(fecha)) {
+            esValido= false;
+        }
+
+        if (TextUtils.isEmpty(origen)) {
+            esValido= false;
+        }
+        if (TextUtils.isEmpty(destino)) {
+            esValido= false;
+        }
+
+        if(!esValido){
+            AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+            builder.setMessage("Por favor complete todos los campos requeridos.").setTitle("Error");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        return esValido;
     }
 
     public void showDatePickerDialog(View view) {
