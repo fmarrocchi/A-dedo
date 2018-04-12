@@ -147,15 +147,14 @@
             android:textSize="15dp" />
     </LinearLayout>
 
-
     <Button
         android:id="@+id/btn_desuscribir"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginBottom="5dp"
+        android:layout_gravity="center"
         android:background="@color/rojo"
-        android:text="Darse de baja"
-        android:onClick="desuscribirUsuario"/>
+        android:text="Dar de baja"/>
 
 
 </LinearLayout>

@@ -4,38 +4,42 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.proyectos.florm.a_dedo.R;
 
 public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private View view;
-    private Button botonEditar;
+    private ImageButton botonEditar, botonEliminar, botonGuardar;
+    private TextView lblDireccion, lblHora, lblFecha;
+    private EditText lblInfo;
+    private Boolean visible;
 
     public void setView(View view) {
         this.view = view;
     }
 
-    public void setBotonEditar(Button botonEditar) {
+    public void setBotonEditar(ImageButton botonEditar) {
         this.botonEditar = botonEditar;
     }
 
-    public void setBotonEliminar(Button botonEliminar) {
+    public void setBotonEliminar(ImageButton botonEliminar) {
         this.botonEliminar = botonEliminar;
     }
 
-    public void setBotonGuardar(Button botonGuardar) {
+    public void setBotonGuardar(ImageButton botonGuardar) {
         this.botonGuardar = botonGuardar;
     }
 
-    public void setLblDireccion(EditText lblDireccion) {
+    public void setLblDireccion(TextView lblDireccion) {
         this.lblDireccion = lblDireccion;
     }
 
-    public void setLblHora(EditText lblHora) {
+    public void setLblHora(TextView lblHora) {
         this.lblHora = lblHora;
     }
 
-    public void setLblFecha(EditText lblFecha) {
+    public void setLblFecha(TextView lblFecha) {
         this.lblFecha = lblFecha;
     }
 
@@ -50,11 +54,6 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     public void setVisible(Boolean visible) {
         this.visible = visible;
     }
-
-    private Button botonEliminar;
-    private Button botonGuardar;
-    private EditText lblDireccion, lblHora, lblFecha, lblInfo;
-    private Boolean visible;
 
     public EditViajeViewHolder(View itemView) {
         super(itemView);
@@ -74,27 +73,27 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         field.setText(destino);
     }
 
-    public Button getBotonEditar() {
+    public ImageButton getBotonEditar() {
         return botonEditar;
     }
 
-    public Button getBotonEliminar() {
+    public ImageButton getBotonEliminar() {
         return botonEliminar;
     }
 
-    public Button getBotonGuardar() {
+    public ImageButton getBotonGuardar() {
         return botonGuardar;
     }
 
-    public EditText getLblDireccion() {
+    public TextView getLblDireccion() {
         return lblDireccion;
     }
 
-    public EditText getLblHora() {
+    public TextView getLblHora() {
         return lblHora;
     }
 
-    public EditText getLblFecha() {
+    public TextView getLblFecha() {
         return lblFecha;
     }
 
@@ -131,16 +130,4 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     public void setInformacion(String informacion) {
         lblInfo.setText(informacion);
     }
-
-//    public void masInfo(){
-//        if (visible) {
-//            info.setVisibility(View.GONE);
-//            visible = false;
-//        }
-//        else{
-//            info.setVisibility(View.VISIBLE);
-//            visible = true;
-//        }
-//
-//    }
 }

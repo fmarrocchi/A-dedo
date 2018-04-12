@@ -7,20 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/lytContenedor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingHorizontal="30dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="39dp">
+        tools:layout_editor_absoluteY="100dp">
 
         <TextView
             android:id="@+id/txtTitulo"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginVertical="15dp"
             android:text="Busca tu viaje"
             android:textSize="24dp" />
 
@@ -28,15 +30,13 @@
             android:id="@+id/origen_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
 
         <fragment
             android:id="@+id/destino_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilPlannedDate"
@@ -63,10 +63,5 @@
             android:textColor="@color/white"
             android:text="Buscar"
             android:onClick="buscar"/>
-
-
-        <include layout="@layout/content_listar_viajes" />
-
     </LinearLayout>
-
 </android.support.constraint.ConstraintLayout>

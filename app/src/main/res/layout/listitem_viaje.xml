@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -18,13 +20,11 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
-            android:textSize="15dp"
             android:layout_height="match_parent"
             android:text=" DESDE "
-            android:textStyle="bold"
             android:drawableLeft="@drawable/icono_desde"
             android:gravity="start"
-            android:layout_marginHorizontal="10dp"/>
+            style="@style/icono_lista_letra"/>
         <TextView android:id="@+id/lblOrigen"
             android:textSize="15dp"
             android:layout_width="wrap_content"
@@ -41,12 +41,10 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
-            android:textSize="15dp"
             android:layout_height="match_parent"
             android:drawableLeft="@drawable/icono_hasta"
-            android:textStyle="bold"
             android:text=" HASTA "
-            android:layout_marginHorizontal="10dp"/>
+            style="@style/icono_lista_letra"/>
         <TextView android:id="@+id/lblDestino"
             android:textSize="15dp"
             android:layout_width="wrap_content"
@@ -84,7 +82,6 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="15dp"
         android:orientation="horizontal">
-
         <TextView
             android:id="@+id/lblLugares"
             android:layout_width="wrap_content"
@@ -146,7 +143,14 @@
             android:textStyle="bold"
             android:textSize="15dp" />
     </LinearLayout>
-
+    <ImageButton
+        android:id="@+id/btn_ver_mas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="5dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/icono_flecha"/>
     <Button
         android:id="@+id/btn_suscribir"
         style="@android:style/Widget.Material.Light.Button.Borderless.Small"

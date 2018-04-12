@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -82,7 +83,7 @@ public class ListarViajesActivity extends BaseActivity {
                             });
                             final String list_viaje_id  = getRef(position).getKey();
 
-                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                            viajeViewHolder.getBtnVerMas().setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
                                     viajeViewHolder.masInfo();
                                 }
@@ -95,15 +96,12 @@ public class ListarViajesActivity extends BaseActivity {
 
 
     public FirebaseRecyclerAdapter adapterMisViajes(){
-        contViajes=0;
-        String conductor = getIntent().getExtras().getString("conductor");
+       String conductor = getIntent().getExtras().getString("conductor");
         Log.i("MIS VIAJES", "llegue a adapter mis viajes, conductor: "+conductor);
         FirebaseRecyclerAdapter adapter =
                 new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-                        contViajes++;
-
                         Log.i("MIS VIAJES", "estoy en un viaje con origen: "+viaje.getOrigen());
                         viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                         viajeViewHolder.setDestino(" " + viaje.getDestino());
@@ -148,27 +146,29 @@ public class ListarViajesActivity extends BaseActivity {
                         final String itemId = getRef(position).getKey();
 
                         if (viaje != null && viaje.getSuscriptos()!= null ) {
+                            Log.i("SUSCRIPCIONES", "mapeo contiene user: "+usuario+"no esta el usuario");
                             if (viaje.getSuscriptos().containsKey(usuario)){
-                            suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
-                            suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
-                            suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
-                            suscripcionesViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            suscripcionesViewHolder.setLugares(" " + viaje.getLugares());
-                            suscripcionesViewHolder.setInformacion(" " + viaje.getInformacion());
-                            suscripcionesViewHolder.setDatosConductor(viaje.getConductor());
+                                Log.i("SUSCRIPCIONES", "mapeo contiene user: "+usuario+"viaje origen: "+viaje.getOrigen());
+                                suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
+                                suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
+                                suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
+                                suscripcionesViewHolder.setHora(" " + viaje.getHora() + " hs");
+                                suscripcionesViewHolder.setLugares(" " + viaje.getLugares());
+                                suscripcionesViewHolder.setInformacion(" " + viaje.getInformacion());
+                                suscripcionesViewHolder.setDatosConductor(viaje.getConductor());
 
-                            suscripcionesViewHolder.getBotonDesuscribir().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    desuscribirUsuario(viaje, itemId);
-                                }
-                            });
-                            final String list_viaje_id = getRef(position).getKey();
+                                suscripcionesViewHolder.getBotonDesuscribir().setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        desuscribirUsuario(viaje, itemId);
+                                    }
+                                });
+                                final String list_viaje_id = getRef(position).getKey();
 
-                            suscripcionesViewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    suscripcionesViewHolder.masInfo();
-                                }
-                            });
+                                suscripcionesViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        suscripcionesViewHolder.masInfo();
+                                    }
+                                });
                             }
                         }
                     }
@@ -344,15 +344,15 @@ public class ListarViajesActivity extends BaseActivity {
     }
 
     public void editarViaje(EditViajeViewHolder viajeViewHolder, Viaje v, String k){
-        final EditText lblDireccion = viajeViewHolder.getLblDireccion();
-        final EditText lblHora = viajeViewHolder.getLblHora();
-        final EditText lblFecha = viajeViewHolder.getLblFecha();
+        final TextView lblDireccion = viajeViewHolder.getLblDireccion();
+        final TextView lblHora = viajeViewHolder.getLblHora();
+        final TextView lblFecha = viajeViewHolder.getLblFecha();
         final EditText lblInfo = viajeViewHolder.getLblInfo();
         final String key = k;
         final Viaje viaje = v;
 
-        final Button botonGuardar = viajeViewHolder.getBotonGuardar();
-        final Button botonEditar = viajeViewHolder.getBotonEditar();
+        final ImageButton botonGuardar = viajeViewHolder.getBotonGuardar();
+        final ImageButton botonEditar = viajeViewHolder.getBotonEditar();
 
         lblDireccion.setEnabled(true);
         lblInfo.setEnabled(true);

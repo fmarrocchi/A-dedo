@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,22 +15,32 @@ import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.R;
 
 
-    public class ViajeViewHolder extends RecyclerView.ViewHolder{
+public class ViajeViewHolder extends RecyclerView.ViewHolder{
         private View view;
         private Button botonSuscribir;
         private TextView nombre, tel, foto, info;
         private Boolean visible;
+        private ImageButton btnVerMas;
 
         public ViajeViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             botonSuscribir = view.findViewById(R.id.btn_suscribir);
+            btnVerMas = view.findViewById(R.id.btn_ver_mas);
             visible = false;
         }
 
         public void setDestino(String destino) {
             TextView field = view.findViewById(R.id.lblDestino);
             field.setText(destino);
+        }
+
+        public ImageButton getBtnVerMas() {
+            return btnVerMas;
+        }
+
+        public void setBtnVerMas(ImageButton btnVerMas) {
+            this.btnVerMas = btnVerMas;
         }
 
         public Button getBotonSuscribir() {
@@ -51,25 +62,25 @@ import com.proyectos.florm.a_dedo.R;
         }
 
         public void setHora(String hora) {
-            TextView field = (TextView) view.findViewById(R.id.lblHora);
+            TextView field = view.findViewById(R.id.lblHora);
             field.setText(hora);
         }
 
         public void setLugares(String lugares) {
-            TextView field = (TextView) view.findViewById(R.id.lblLugares);
+            TextView field = view.findViewById(R.id.lblLugares);
             field.setText(lugares);
         }
 
         public void setInformacion(String informacion) {
-            info = (TextView) view.findViewById(R.id.lblInformacion);
+            info = view.findViewById(R.id.lblInformacion);
             info.setText(informacion);
             info.setVisibility(View.GONE);
         }
 
         public void setDatosConductor(String conductor) {
-            nombre = (TextView) view.findViewById(R.id.lblConductor);
+            nombre = view.findViewById(R.id.lblConductor);
             nombre.setVisibility(View.GONE);
-            tel = (TextView) view.findViewById(R.id.lblTelefono);
+            tel = view.findViewById(R.id.lblTelefono);
             tel.setVisibility(View.GONE);
           //  foto = (TextView) view.findViewById(R.id.lblFoto);
 
@@ -84,11 +95,9 @@ import com.proyectos.florm.a_dedo.R;
                     //leeremos un objeto de tipo Usuario
                     User user = dataSnapshot.getValue(User.class);
 
-                    Log.i("USER ES", user.toString());
-
-                 //   nombre.setText(user.getNombre());
-                  //  tel.setText(user.getTelefono());
-                    // foto.setText(mDataBase.child(conductor).child("foto").toString());
+                    nombre.setText(user.getNombre());
+                    tel.setText(user.getTelefono());
+                    //foto.setText(mDataBase.child(conductor).child("foto").toString());
 
                 }
                 public void onCancelled(DatabaseError error) {
@@ -103,12 +112,14 @@ import com.proyectos.florm.a_dedo.R;
                 nombre.setVisibility(View.GONE);
                 tel.setVisibility(View.GONE);
                 info.setVisibility(View.GONE);
+                btnVerMas.setImageResource(R.drawable.icono_flecha);
                 visible = false;
             }
             else{
                 nombre.setVisibility(View.VISIBLE);
                 tel.setVisibility(View.VISIBLE);
                 info.setVisibility(View.VISIBLE);
+                btnVerMas.setImageResource(R.drawable.icono_ver_menos);
                 visible = true;
             }
 

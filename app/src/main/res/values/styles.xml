@@ -18,5 +18,22 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="icono_lista" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="icono_lista_letra" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:gravity">start</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+
+    </style>
 
 </resources>
