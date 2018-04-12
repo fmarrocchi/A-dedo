@@ -2,25 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.proyectos.florm.a_dedo.MainActivity">
+
     <item android:id="@+id/menu_buscar_viaje" android:title="Buscar Viaje"
         android:icon="@android:drawable/ic_menu_search"
-        android:iconTint="@color/gris"
-        app:showAsAction="ifRoom|withText" />
+        android:iconTint="@color/gris" />
 
     <item android:id="@+id/menu_crear_viaje" android:title="Crear Viaje"
         android:icon="@android:drawable/ic_input_add"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom|withText" />
+        android:iconTint="@color/white" />
 
     <item android:id="@+id/menu_mis_viajes" android:title="Mis Viajes"
         android:icon="@android:drawable/ic_menu_add"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom|withText" />
+        android:iconTint="@color/white" />
 
     <item android:id="@+id/menu_mis_suscripciones" android:title="Mis Suscripciones"
         android:icon="@android:drawable/ic_menu_add"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom|withText" />
+        android:iconTint="@color/white" />
 
     <item android:id="@+id/menu_cerrar_sesion" android:title="Cerrar sesion"
         app:showAsAction="withText"/>

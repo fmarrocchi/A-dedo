@@ -27,6 +27,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -48,14 +49,13 @@
             android:name=".SignInActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".SignUpActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="Registrarse"/>
-
-        <activity android:name=".ResetPasswordActivity"
-            android:parentActivityName=".SignInActivity"/>
-
+        <activity
+            android:name=".SignUpActivity"
+            android:label="Registrarse"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:parentActivityName=".SignInActivity" />
         <activity android:name=".SignInGoogleActivity" />
 
         <meta-data

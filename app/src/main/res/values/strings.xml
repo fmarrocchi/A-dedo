@@ -106,4 +106,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_viajes_listar">ViajesListarActivity</string>
+    <string name="title_activity_main_aux">MainAuxActivity</string>
 </resources>

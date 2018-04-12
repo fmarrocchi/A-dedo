@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabItem;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -14,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference referenceUsuarios = database.getReference("usuarios");
-
+    Button crear, buscar;
     String key;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +51,19 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                crearViaje();
-            }
-        });
-        fab.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        crear = findViewById(R.id.boton_crea);
+        crear.setAlpha(0.70f); //Dar transparencia
+        buscar = findViewById(R.id.boton_busca);
+        buscar.setAlpha(0.70f);
 
+    }
 
+    public void crear(View v){
+        crearViaje();
+    }
+
+    public void buscar(View v){
+        buscarViaje();
     }
 
     //Metodo para verificar si el usuario esta logueado antes de comenzar la actividad
@@ -121,7 +126,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void buscarViaje(){
+     public void buscarViaje(){
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
@@ -178,8 +183,6 @@ public class MainActivity extends BaseActivity {
             public void onCancelled(DatabaseError databaseError) {      }
         });
     }
-
-
 
     private AlertDialog.Builder telefonoDialog(final User user){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

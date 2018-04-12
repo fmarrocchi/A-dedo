@@ -5,9 +5,14 @@
     android:id="@+id/listar_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.proyectos.florm.a_dedo.ListarViajesActivity"
     android:background="@color/grisclaro">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/lytContenedor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -34,18 +39,21 @@
 
             <TextView
                 android:id="@+id/toolbar_user"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16dp"
                 android:paddingStart="15dp"
-                android:paddingTop="15dp"
+                android:paddingTop="40dp"
+                android:text=""
                 android:textColor="@color/white"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+                android:textSize="16dp" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_listar_viajes" />
-
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_viajes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

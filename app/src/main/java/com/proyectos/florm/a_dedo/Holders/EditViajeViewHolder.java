@@ -9,7 +9,50 @@ import com.proyectos.florm.a_dedo.R;
 
 public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private View view;
-    private Button botonEditar, botonEliminar, botonGuardar;
+    private Button botonEditar;
+
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    public void setBotonEditar(Button botonEditar) {
+        this.botonEditar = botonEditar;
+    }
+
+    public void setBotonEliminar(Button botonEliminar) {
+        this.botonEliminar = botonEliminar;
+    }
+
+    public void setBotonGuardar(Button botonGuardar) {
+        this.botonGuardar = botonGuardar;
+    }
+
+    public void setLblDireccion(EditText lblDireccion) {
+        this.lblDireccion = lblDireccion;
+    }
+
+    public void setLblHora(EditText lblHora) {
+        this.lblHora = lblHora;
+    }
+
+    public void setLblFecha(EditText lblFecha) {
+        this.lblFecha = lblFecha;
+    }
+
+    public void setLblInfo(EditText lblInfo) {
+        this.lblInfo = lblInfo;
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    private Button botonEliminar;
+    private Button botonGuardar;
     private EditText lblDireccion, lblHora, lblFecha, lblInfo;
     private Boolean visible;
 

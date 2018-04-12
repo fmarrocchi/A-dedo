@@ -32,6 +32,7 @@ public class ListarViajesActivity extends BaseActivity {
 
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
+    private TextView toolbarUser;
     int contViajes;
     String destino;
     String fecha;
@@ -49,12 +50,14 @@ public class ListarViajesActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        toolbarUser = findViewById(R.id.toolbar_user);
+
         mostrarViajes();
     }
 
     public FirebaseRecyclerAdapter adapterBuscar(){
-        contViajes=0;
         String origen = getIntent().getExtras().getString("origen");
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         destino = getIntent().getExtras().getString("destino");
         fecha = getIntent().getExtras().getString("fecha");
         FirebaseRecyclerAdapter adapter =
@@ -62,9 +65,7 @@ public class ListarViajesActivity extends BaseActivity {
                     public void populateViewHolder(final ViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha))) {
-                            contViajes++;
-
+                        if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha)) && (!viaje.getConductor().equals(usuario)) ) {
                             viajeViewHolder.setDestino(" " + viaje.getDestino());
                             viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                             viajeViewHolder.setFecha(" " + viaje.getFecha());
@@ -89,7 +90,6 @@ public class ListarViajesActivity extends BaseActivity {
                         }
                     }
                 };
-
         return adapter;
     }
 
@@ -97,21 +97,23 @@ public class ListarViajesActivity extends BaseActivity {
     public FirebaseRecyclerAdapter adapterMisViajes(){
         contViajes=0;
         String conductor = getIntent().getExtras().getString("conductor");
+        Log.i("MIS VIAJES", "llegue a adapter mis viajes, conductor: "+conductor);
         FirebaseRecyclerAdapter adapter =
                 new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-                            contViajes++;
+                        contViajes++;
 
-                            viajeViewHolder.setOrigen(" " + viaje.getOrigen());
-                            viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setFecha(" " + viaje.getFecha());
-                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setLugares(" " + viaje.getLugares());
-                            viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
-                            //viajeViewHolder.setInformacion(" " + viaje.getInformacion()); //TODO TIRA NULL POINTER EXCEPTION ACA NO SE PQ
+                        Log.i("MIS VIAJES", "estoy en un viaje con origen: "+viaje.getOrigen());
+                        viajeViewHolder.setOrigen(" " + viaje.getOrigen());
+                        viajeViewHolder.setDestino(" " + viaje.getDestino());
+                        viajeViewHolder.setFecha(" " + viaje.getFecha());
+                        viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
+                        viajeViewHolder.setLugares(" " + viaje.getLugares());
+                        viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
+                        viajeViewHolder.setInformacion(" " + viaje.getInformacion());
 
-                            final String list_viaje_id  = getRef(position).getKey();
+                        final String list_viaje_id  = getRef(position).getKey();
 
 //                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
 //                                public void onClick(View v) {
@@ -119,41 +121,34 @@ public class ListarViajesActivity extends BaseActivity {
 //                                }
 //                            });
 
-                            viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    editarViaje(viajeViewHolder, viaje, itemId);
+                        viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                editarViaje(viajeViewHolder, viaje, itemId);
 
-                                }
-                            });
+                            }
+                        });
 
-                            viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    eliminarViaje(itemId);
-                                }
-                            });
+                        viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                eliminarViaje(itemId);
+                            }
+                        });
                     }
                 };
-
+        Log.i("MIS VIAJES", "finnn, retorno el adapter");
+        Log.i("MIS VIAJES", "es nulo? "+ adapter.equals(null));
         return adapter;
-
     }
 
     public FirebaseRecyclerAdapter adapterMisSuscripciones(){
-        contViajes=0;
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseRecyclerAdapter adapter =
                 new FirebaseRecyclerAdapter<Viaje, MisSuscripcionesViewHolder>(Viaje.class, R.layout.listitem_missuscripciones, MisSuscripcionesViewHolder.class, mDataBase) {
                     public void populateViewHolder(final MisSuscripcionesViewHolder suscripcionesViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if (viaje != null && viaje.getSuscriptos()!= null ){
-                            if (viaje.getSuscriptos().containsKey(usuario))
-                                Log.i("DESUSCRIBIR", "usuario esta: "+usuario);
-                            else
-                                Log.i("DESUSCRIBIR", "usuario no esta: "+usuario);
-                            //TODO CAMBIAR SI CAMBIA LA FORMA DE LA LISTA DE SUSCRIPTOS
-                            contViajes++;
-
+                        if (viaje != null && viaje.getSuscriptos()!= null ) {
+                            if (viaje.getSuscriptos().containsKey(usuario)){
                             suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
                             suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
                             suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
@@ -167,45 +162,43 @@ public class ListarViajesActivity extends BaseActivity {
                                     desuscribirUsuario(viaje, itemId);
                                 }
                             });
-                            final String list_viaje_id  = getRef(position).getKey();
+                            final String list_viaje_id = getRef(position).getKey();
 
                             suscripcionesViewHolder.getView().setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
                                     suscripcionesViewHolder.masInfo();
                                 }
                             });
+                            }
                         }
-                        else
-                            Log.i("DESUSCRIBIR", "algo es nulo");
                     }
                 };
-
         return adapter;
-
     }
 
     private void mostrarViajes(){
         //Inicialización RecyclerView
-        recycler = findViewById(R.id.listaViajes);
+        recycler = findViewById(R.id.recycler_viajes);
         recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
 
         String opcion = getIntent().getExtras().getString("opcion");
         if(opcion.equals("buscar"))
             adapter = adapterBuscar();
         else
-            if(opcion.equals("misviajes"))
-                adapter = adapterMisViajes();
+            if(opcion.equals("misviajes")){
+                Log.i("MIS VIAJES", "la opcion es misviajes");
+                adapter = adapterMisViajes();}
             else
                 if (opcion.equals("missuscripciones")){
-                    Log.i("DESUSCRIBIR", "voy a llamar al adapter");
+                    Log.i("MIS VIAJES", "voy a llamar al adapter");
                     adapter = adapterMisSuscripciones();
                 }
-
-
-        recycler.setAlpha(0.90f); //Dar transparencia
+                else
+                    Log.i("MIS VIAJES", "no hay adapter");
+        Log.i("MIS VIAJES", "adapter es null: "+adapter.equals(null));
+       // recycler.setAlpha(0.90f); //Dar transparencia
+        recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(adapter);
-
     }
 
     public void suscribirUsuario(Viaje v, String k){
@@ -342,6 +335,11 @@ public class ListarViajesActivity extends BaseActivity {
         if (user == null) {
             //Si no esta logueado voy a la actividad de login
             startActivity(new Intent(ListarViajesActivity.this, SignInActivity.class));
+        }
+        else{
+            String name = user.getDisplayName();
+            if (name != null)
+                toolbarUser.setText(name);
         }
     }
 

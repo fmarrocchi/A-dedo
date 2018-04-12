@@ -1,17 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:background="@drawable/imagenfondo">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="texto" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:text="a-dedo"
+            android:paddingTop="20dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="60dp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Viajes compartidos."
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:paddingBottom="40dp"
+            android:textSize="20dp" />
 
-</android.support.v4.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/boton_busca"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:textColor="@color/white"
+            android:text="Encontrá con quién viajar"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:onClick="buscar"/>
+        <Button
+            android:id="@+id/boton_crea"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Compartí tus viajes con otros usuarios"
+            android:fontFamily="casual"
+            android:textStyle="bold"
+            android:onClick="crear"/>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -26,6 +26,7 @@
             android:layout_marginHorizontal="10dp"/>
         <TextView android:id="@+id/lblOrigen"
             android:textSize="15dp"
+            android:text=" lugar "
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="15dp"
@@ -170,5 +171,4 @@
             android:visibility="invisible"/>
 
     </LinearLayout>
-
 </LinearLayout>
