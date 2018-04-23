@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:paddingTop="20dp"
+                android:paddingTop="10dp"
                 android:scaleType="center"
                 android:src="@drawable/carretera" />
 
@@ -85,7 +85,7 @@
                 android:id="@+id/btn_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
                 android:text="Iniciar sesión"
                 android:textColor="@android:color/white" />

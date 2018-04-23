@@ -145,7 +145,6 @@
             android:textSize="15dp" />
     </LinearLayout>
 
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -162,4 +161,14 @@
             android:textSize="15dp"
             android:enabled="false"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_ver_suscriptos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:text="Ver suscriptos"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark" />
 </LinearLayout>

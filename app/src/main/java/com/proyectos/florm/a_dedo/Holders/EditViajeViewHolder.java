@@ -12,6 +12,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private View view;
     private ImageButton botonEditar, botonEliminar, botonGuardar;
     private TextView lblDireccion, lblHora, lblFecha;
+    private Button botonSuscriptos;
     private EditText lblInfo;
     private Boolean visible;
 
@@ -61,6 +62,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         botonEditar = view.findViewById(R.id.btn_editar);
         botonEliminar = view.findViewById(R.id.btn_eliminar);
         botonGuardar = view.findViewById(R.id.btn_guardar);
+        botonSuscriptos = view.findViewById(R.id.btn_ver_suscriptos);
         lblDireccion = view.findViewById(R.id.lblDireccion);
         lblInfo = view.findViewById(R.id.lblInformacion);
         lblHora = view.findViewById(R.id.lblHora);
@@ -85,6 +87,9 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         return botonGuardar;
     }
 
+    public Button getBotonVerSuscriptos() {
+        return botonSuscriptos;
+    }
     public TextView getLblDireccion() {
         return lblDireccion;
     }

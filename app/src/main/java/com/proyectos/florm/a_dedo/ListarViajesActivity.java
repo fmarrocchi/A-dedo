@@ -97,12 +97,10 @@ public class ListarViajesActivity extends BaseActivity {
 
     public FirebaseRecyclerAdapter adapterMisViajes(){
        String conductor = getIntent().getExtras().getString("conductor");
-        Log.i("MIS VIAJES", "llegue a adapter mis viajes, conductor: "+conductor);
         FirebaseRecyclerAdapter adapter =
                 new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-                        Log.i("MIS VIAJES", "estoy en un viaje con origen: "+viaje.getOrigen());
                         viajeViewHolder.setOrigen(" " + viaje.getOrigen());
                         viajeViewHolder.setDestino(" " + viaje.getDestino());
                         viajeViewHolder.setFecha(" " + viaje.getFecha());
@@ -113,16 +111,9 @@ public class ListarViajesActivity extends BaseActivity {
 
                         final String list_viaje_id  = getRef(position).getKey();
 
-//                            viajeViewHolder.getView().setOnClickListener(new View.OnClickListener() {
-//                                public void onClick(View v) {
-//                                    viajeViewHolder.masInfo();
-//                                }
-//                            });
-
                         viajeViewHolder.getBotonEditar().setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 editarViaje(viajeViewHolder, viaje, itemId);
-
                             }
                         });
 
@@ -131,10 +122,14 @@ public class ListarViajesActivity extends BaseActivity {
                                 eliminarViaje(itemId);
                             }
                         });
+
+                        viajeViewHolder.getBotonVerSuscriptos().setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                verSuscriptos(viajeViewHolder, viaje, itemId);
+                            }
+                        });
                     }
                 };
-        Log.i("MIS VIAJES", "finnn, retorno el adapter");
-        Log.i("MIS VIAJES", "es nulo? "+ adapter.equals(null));
         return adapter;
     }
 
@@ -343,6 +338,18 @@ public class ListarViajesActivity extends BaseActivity {
         }
     }
 
+    public void verSuscriptos(EditViajeViewHolder viajeViewHolder, Viaje viaje, String k){
+        Map<String, Integer> suscriptos = viaje.getSuscriptos();
+        if (suscriptos!=null)
+            Log.i("LOS SUSCRIPTOS SON: ", suscriptos.toString());
+
+        for (Map.Entry<String, Integer> entry : suscriptos.entrySet()) {
+            String idSuscripto = entry.getKey();
+            database.getReference().child("usuarios").child(idSuscripto);
+            Log.i("suscripto: ","clave=" + entry.getKey() + ", valor=" + entry.getValue());
+        }
+    }
+
     public void editarViaje(EditViajeViewHolder viajeViewHolder, Viaje v, String k){
         final TextView lblDireccion = viajeViewHolder.getLblDireccion();
         final TextView lblHora = viajeViewHolder.getLblHora();
@@ -353,6 +360,7 @@ public class ListarViajesActivity extends BaseActivity {
 
         final ImageButton botonGuardar = viajeViewHolder.getBotonGuardar();
         final ImageButton botonEditar = viajeViewHolder.getBotonEditar();
+        final Button botonVerSuscriptos = viajeViewHolder.getBotonVerSuscriptos();
 
         lblDireccion.setEnabled(true);
         lblInfo.setEnabled(true);
@@ -364,7 +372,6 @@ public class ListarViajesActivity extends BaseActivity {
 
         botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //guardarCambios(key, lblDireccion.getText(), lblFecha.getText(), lblHora.getText());
 
                 viaje.setDireccion(lblDireccion.getText().toString());
                 viaje.setHora(lblHora.getText().toString());
