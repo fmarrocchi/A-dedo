@@ -1,6 +1,7 @@
 package com.proyectos.florm.a_dedo;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +9,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +33,8 @@ import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +44,21 @@ public class ListarViajesActivity extends BaseActivity {
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
     private TextView toolbarUser;
+    private TextView lblHora;
     private int contViajes;
-    private String destino;
-    private String fecha;
-    private String usuario;
+    String destino;
+    String fecha;
+    String usuario;
+
+    //Calendario para obtener fecha & hora
+    public final Calendar c = Calendar.getInstance();
+
+    //Variables para obtener la hora hora
+    final int hora = c.get(Calendar.HOUR_OF_DAY);
+    final int minuto = c.get(Calendar.MINUTE);
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBase = database.getReference().child("viajes");
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -394,7 +406,7 @@ public class ListarViajesActivity extends BaseActivity {
 
     public void editarViaje(EditViajeViewHolder viajeViewHolder, Viaje v, String k){
         final TextView lblDireccion = viajeViewHolder.getLblDireccion();
-        final TextView lblHora = viajeViewHolder.getLblHora();
+        lblHora = viajeViewHolder.getLblHora();
         final TextView lblFecha = viajeViewHolder.getLblFecha();
         final EditText lblInfo = viajeViewHolder.getLblInfo();
         final String key = k;
@@ -415,23 +427,33 @@ public class ListarViajesActivity extends BaseActivity {
 
         botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String hs = lblHora.getText().toString();
+                String direccion = lblDireccion.getText().toString();
+                String fecha = lblFecha.getText().toString();
+                String info = lblInfo.getText().toString();
 
-                viaje.setDireccion(lblDireccion.getText().toString());
-                viaje.setHora(lblHora.getText().toString());
-                viaje.setFecha(lblFecha.getText().toString());
-                viaje.setInformacion(lblInfo.getText().toString());
+                viaje.setDireccion(direccion);
+                viaje.setHora(hs);
+                viaje.setFecha(fecha);
+                viaje.setInformacion(info);
 
-                Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/" + key , viaje);
-                mDataBase.updateChildren(childUpdates);
+                if(validar(hs, info, direccion) ){
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    childUpdates.put("/" + key , viaje);
+                    mDataBase.updateChildren(childUpdates);
 
-                lblDireccion.setEnabled(false);
-                lblInfo.setEnabled(false);
-                lblHora.setEnabled(false);
-                lblFecha.setEnabled(false);
-                botonGuardar.setVisibility(View.INVISIBLE);
-                botonEditar.setEnabled(true);
-                lblHora.setClickable(false);
+                    ValueEventListener postListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Snackbar.make(findViewById(R.id.listar_layout), "Los cambios fueron realizados con exito.", Snackbar.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Snackbar.make(findViewById(R.id.listar_layout), "Lamentamos que los cambios no pudieron ser guardados.", Snackbar.LENGTH_SHORT).show();
+                        }
+                    };
+                    mDataBase.addValueEventListener(postListener);
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
 
@@ -452,6 +474,16 @@ public class ListarViajesActivity extends BaseActivity {
                         });
                 AlertDialog dialog = builder.create();
                 dialog.show();
+
+                    lblDireccion.setEnabled(false);
+                    lblInfo.setEnabled(false);
+                    lblHora.setEnabled(false);
+                    lblFecha.setEnabled(false);
+                    botonGuardar.setVisibility(View.INVISIBLE);
+                    botonEditar.setEnabled(true);
+                    lblHora.setClickable(false);
+                }
+
 
             }
         });
@@ -544,6 +576,49 @@ public class ListarViajesActivity extends BaseActivity {
         return mails;
     }
 
+
+    public void showTimePickerDialog(View view) {
+        Log.d("asd", "clickie en hora");
+        TimePickerDialog timeDialog = new TimePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, new TimePickerDialog.OnTimeSetListener() {
+            public void onTimeSet(TimePicker view, int hour, int minutes) {
+                final String selectedTime = twoDigits(hour) + ":" + twoDigits(minutes);
+                lblHora.setText(selectedTime);
+                //horaViaje=hour; minViaje=minutes;
+            }
+        },hora, minuto, true);
+        //Muestro el widget
+        timeDialog.show();
+    }
+
+    private String twoDigits(int n) {
+        return (n<=9) ? ("0"+n) : String.valueOf(n);
+    }
+
+    public boolean validar(String hora, String informacion, String direccion) {
+        boolean esValido= true;
+        // Hora is required
+        if (TextUtils.isEmpty(hora)) {
+            esValido= false;
+        }
+
+        //Si no hay informacion extra le asigno un guion (no es campo requerido)
+        if (TextUtils.isEmpty(informacion)) {
+            informacion = " No hay información adicional.";
+        }
+
+        if (TextUtils.isEmpty(direccion)) {
+            //origenAutocomplFrag.
+            esValido= false;
+        }
+
+        if(!esValido){
+            AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+            builder.setMessage("La hora y direccion no pueden guardarse vacios.").setTitle("Error");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        return esValido;
+    }
 
 
 }
