@@ -18,15 +18,20 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.proyectos.florm.a_dedo.Holders.EditViajeViewHolder;
 import com.proyectos.florm.a_dedo.Holders.MisSuscripcionesViewHolder;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
+import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.Models.Viaje;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ListarViajesActivity extends BaseActivity {
@@ -34,13 +39,14 @@ public class ListarViajesActivity extends BaseActivity {
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
     private TextView toolbarUser;
-    int contViajes;
-    String destino;
-    String fecha;
-    String usuario;
+    private int contViajes;
+    private String destino;
+    private String fecha;
+    private String usuario;
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference mDataBase = database.getReference().child("viajes");
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +131,14 @@ public class ListarViajesActivity extends BaseActivity {
 
                         viajeViewHolder.getBotonVerSuscriptos().setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                verSuscriptos(viajeViewHolder, viaje, itemId);
+                                if (viajeViewHolder.getBotonVerSuscriptos().getText().equals("Ver suscriptos")){
+                                    verSuscriptos(viajeViewHolder, viaje, itemId);
+                                    viajeViewHolder.getBotonVerSuscriptos().setText("Ocultar");
+                                }
+                                else {
+                                    viajeViewHolder.getTextSuscriptos().setVisibility(View.GONE);
+                                    viajeViewHolder.getBotonVerSuscriptos().setText("Ver suscriptos");
+                                }
                             }
                         });
                     }
@@ -141,10 +154,8 @@ public class ListarViajesActivity extends BaseActivity {
                         final String itemId = getRef(position).getKey();
 
                         if (viaje != null && viaje.getSuscriptos()!= null ) {
-                            Log.i("SUSCRIPCIONES", "mapeo contiene user: "+usuario+"no esta el usuario");
                             if (viaje.getSuscriptos().containsKey(usuario)){
-                                Log.i("SUSCRIPCIONES", "mapeo contiene user: "+usuario+"viaje origen: "+viaje.getOrigen());
-                                suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
+                               suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
                                 suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
                                 suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
                                 suscripcionesViewHolder.setHora(" " + viaje.getHora() + " hs");
@@ -340,13 +351,44 @@ public class ListarViajesActivity extends BaseActivity {
 
     public void verSuscriptos(EditViajeViewHolder viajeViewHolder, Viaje viaje, String k){
         Map<String, Integer> suscriptos = viaje.getSuscriptos();
-        if (suscriptos!=null)
-            Log.i("LOS SUSCRIPTOS SON: ", suscriptos.toString());
+        if (suscriptos!=null){
+            if (suscriptos.isEmpty()){
+                Log.i("Suscriptos: ", "no hay");
+                Snackbar.make(findViewById(R.id.listar_layout), "Aún no tenés suscriptos", Snackbar.LENGTH_LONG).show();
+            }
+            else{
+                Log.i("LOS SUSCRIPTOS SON: ", suscriptos.toString());
+                listarSuscritos(viajeViewHolder, suscriptos);
+            }
 
+        }
+
+    }
+
+    public void listarSuscritos(EditViajeViewHolder viajeViewHolder, Map<String, Integer> suscriptos){
+        final TextView suscriptosText = viajeViewHolder.getTextSuscriptos();
+
+        //Itero sobre el mapeo de suscritos al viaje (idUsuario,cantsuscripciones)
         for (Map.Entry<String, Integer> entry : suscriptos.entrySet()) {
             String idSuscripto = entry.getKey();
-            database.getReference().child("usuarios").child(idSuscripto);
-            Log.i("suscripto: ","clave=" + entry.getKey() + ", valor=" + entry.getValue());
+            final String cantLugares = entry.getValue().toString();
+
+            suscriptosText.setText(""); //Vacio el campo de texto
+            suscriptosText.setVisibility(View.VISIBLE);
+
+            //Obtengo datos del usuario con id en el elemento actual del mapeo
+            database.getReference().child("usuarios/"+idSuscripto)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                           User user = dataSnapshot.getValue(User.class);
+                            String suscriptoAMostrar = "\n"+ user.getNombre()+" \n@ "+user.getMail()+" \n☎ "+ user.getTelefono()+" \nLugares reservados: "+cantLugares+"\n";
+                            suscriptosText.setText(suscriptosText.getText()+ suscriptoAMostrar);
+                        }
+                        public void onCancelled(DatabaseError error) {
+                            Log.e("ERROR FIREBASE", error.getMessage());
+                        }
+
+                    });
         }
     }
 
@@ -357,6 +399,7 @@ public class ListarViajesActivity extends BaseActivity {
         final EditText lblInfo = viajeViewHolder.getLblInfo();
         final String key = k;
         final Viaje viaje = v;
+        final TextView suscriptosAViaje = viajeViewHolder.getTextSuscriptos();
 
         final ImageButton botonGuardar = viajeViewHolder.getBotonGuardar();
         final ImageButton botonEditar = viajeViewHolder.getBotonEditar();
@@ -398,13 +441,13 @@ public class ListarViajesActivity extends BaseActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 String subject = "Modificación de viaje";
                                 String message = "Hola. Te informamos que se ha efectuado una modificacion en un viaje al que te has suscripto.";
-                                String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
-                                sendEmails(subject, message, to);
+
+                                sendEmails(subject, message, obtenerMailsSuscriptos(viaje.getSuscriptos()));
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
+                                dialog.dismiss();
                             }
                         });
                 AlertDialog dialog = builder.create();
@@ -476,6 +519,31 @@ public class ListarViajesActivity extends BaseActivity {
 
         startActivity(Intent.createChooser(email, "Seleccione un cliente de mail:"));
     }
+
+    public String obtenerMailsSuscriptos(Map<String, Integer> suscriptos){
+        final TextView mailsSuscriptos = findViewById(R.id.mails_suscriptos);
+        mailsSuscriptos.setText("");
+
+        for (Map.Entry<String, Integer> entry : suscriptos.entrySet()) {
+            String idSuscripto = entry.getKey();
+            //Obtengo mail del usuario con id en el elemento actual del mapeo
+            database.getReference().child("usuarios/"+idSuscripto)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            Log.i("MAILS", "agrego "+user.getMail());
+                            mailsSuscriptos.setText(mailsSuscriptos.getText()+";"+user.getMail());
+                        }
+                        public void onCancelled(DatabaseError error) {
+                            Log.e("ERROR FIREBASE", error.getMessage());
+                        }
+                    });
+        }
+        String mails = mailsSuscriptos.getText().toString();
+        Log.i("MAILS ", "(termine) "+mails);
+        return mails;
+    }
+
 
 
 }

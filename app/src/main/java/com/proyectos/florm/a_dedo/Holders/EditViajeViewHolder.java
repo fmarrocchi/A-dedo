@@ -8,14 +8,33 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import com.proyectos.florm.a_dedo.R;
 
+import org.w3c.dom.Text;
+
 public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private View view;
     private ImageButton botonEditar, botonEliminar, botonGuardar;
-    private TextView lblDireccion, lblHora, lblFecha;
+    private EditText lblHora, lblFecha;
+    private TextView lblDireccion, textSuscriptos;
     private Button botonSuscriptos;
+
     private EditText lblInfo;
     private Boolean visible;
 
+    public Button getBotonSuscriptos() {
+        return botonSuscriptos;
+    }
+
+    public void setBotonSuscriptos(Button botonSuscriptos) {
+        this.botonSuscriptos = botonSuscriptos;
+    }
+
+    public TextView getTextSuscriptos() {
+        return textSuscriptos;
+    }
+
+    public void setTextSuscriptos(TextView textSuscriptos) {
+        this.textSuscriptos = textSuscriptos;
+    }
     public void setView(View view) {
         this.view = view;
     }
@@ -36,11 +55,11 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         this.lblDireccion = lblDireccion;
     }
 
-    public void setLblHora(TextView lblHora) {
+    public void setLblHora(EditText lblHora) {
         this.lblHora = lblHora;
     }
 
-    public void setLblFecha(TextView lblFecha) {
+    public void setLblFecha(EditText lblFecha) {
         this.lblFecha = lblFecha;
     }
 
@@ -63,6 +82,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         botonEliminar = view.findViewById(R.id.btn_eliminar);
         botonGuardar = view.findViewById(R.id.btn_guardar);
         botonSuscriptos = view.findViewById(R.id.btn_ver_suscriptos);
+        textSuscriptos = view.findViewById(R.id.text_suscriptos);
         lblDireccion = view.findViewById(R.id.lblDireccion);
         lblInfo = view.findViewById(R.id.lblInformacion);
         lblHora = view.findViewById(R.id.lblHora);
@@ -90,15 +110,16 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     public Button getBotonVerSuscriptos() {
         return botonSuscriptos;
     }
+
     public TextView getLblDireccion() {
         return lblDireccion;
     }
 
-    public TextView getLblHora() {
+    public EditText getLblHora() {
         return lblHora;
     }
 
-    public TextView getLblFecha() {
+    public EditText getLblFecha() {
         return lblFecha;
     }
 

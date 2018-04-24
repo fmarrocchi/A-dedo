@@ -38,15 +38,16 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <TextView
-                android:id="@+id/toolbar_user"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="15dp"
-                android:paddingTop="40dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="16dp" />
+            android:id="@+id/toolbar_user"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:paddingTop="40dp"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -56,4 +57,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/mails_suscriptos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>
