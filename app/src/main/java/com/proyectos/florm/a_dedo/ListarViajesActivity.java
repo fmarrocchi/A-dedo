@@ -130,7 +130,6 @@ public class ListarViajesActivity extends BaseActivity {
         return adapter;
     }
 
-
     public FirebaseRecyclerAdapter adapterMisViajes(){
        String conductor = getIntent().getExtras().getString("conductor");
         FirebaseRecyclerAdapter adapter =
@@ -281,16 +280,18 @@ public class ListarViajesActivity extends BaseActivity {
                             childUpdates.put("/" + key , viaje);
                             mDataBase.updateChildren(childUpdates);
 
-                            //mostrar cartel de reservacion de lugares
-                            Snackbar.make(findViewById(R.id.listar_layout), cant_a_reservar + " lugares reservados", Snackbar.LENGTH_LONG)
-                                    .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
-                                    .setAction("Aceptar", new View.OnClickListener() {
-                                        public void onClick(View view) {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+                            builder.setMessage(cant_a_reservar + " lugares reservados")
+                                    .setTitle("Suscripción")
+                                    .setNeutralButton(
+                                            "Ok", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    onBackPressed();
+                                                }
+                                            });
+                            AlertDialog dialogo = builder.create();
+                            dialogo.show();
 
-                                        }
-                                    })
-                                    .show();
-                            onBackPressed();
                         }
                         else{
                             //Mostrar cartel de lugares insuficientes
@@ -326,16 +327,13 @@ public class ListarViajesActivity extends BaseActivity {
 
         try {
             Map<String, Integer> suscriptos = viaje.getSuscriptos();
-            Log.i("DESUSCRIBIR", "obtuve suscriptos");
             if (suscriptos.containsKey(id_user)) {
                 //obtengo la cantidad de reservas que realizo el usuario para este viaje
                 int cant_reservados = suscriptos.get(id_user);
-                Log.i("DESUSCRIBIR", "cant de reservas: "+cant_reservados);
                 //devuelvo los lugares al viaje
                 viaje.setLugares(viaje.getLugares() + cant_reservados);
                 //elimino el usuario de la lista de suscritos del viaje
                 suscriptos.remove(id_user);
-                // TODO viaje.setSuscriptos(suscriptos);
             }
         } catch (NullPointerException e) {
             // Google Sign In failed, update UI appropriately
@@ -376,10 +374,7 @@ public class ListarViajesActivity extends BaseActivity {
             if (name != null)
                 toolbarUser.setText(name);
             Uri urlImage = user.getPhotoUrl();
-            if(urlImage == null){
-                Log.d("URL IMAGEN", "url de la imagen es nula");
-            }
-            else{
+            if(urlImage != null){
                 Picasso.with(this).load(urlImage).transform(new CircleTransform()).into(photoViewer);
             }
         }
@@ -453,6 +448,9 @@ public class ListarViajesActivity extends BaseActivity {
                 String direccion = lblDireccion.getText().toString();
                 String fecha = lblFecha.getText().toString();
                 String info = lblInfo.getText().toString();
+                //Si no ingreso informacion adicional creo un cartel general
+                if (TextUtils.isEmpty(info))
+                    info = " No hay información adicional.";
 
                 viaje.setDireccion(direccion);
                 viaje.setHora(hs);
@@ -497,13 +495,13 @@ public class ListarViajesActivity extends BaseActivity {
                         dialog.show();
                     }
 
-                lblDireccion.setEnabled(false);
-                lblInfo.setEnabled(false);
-                lblHora.setEnabled(false);
-                lblFecha.setEnabled(false);
-                botonGuardar.setVisibility(View.INVISIBLE);
-                botonEditar.setEnabled(true);
-                lblHora.setClickable(false);
+                    lblDireccion.setEnabled(false);
+                    lblInfo.setEnabled(false);
+                    lblHora.setEnabled(false);
+                    lblFecha.setEnabled(false);
+                    botonGuardar.setVisibility(View.INVISIBLE);
+                    botonEditar.setEnabled(true);
+                    lblHora.setClickable(false);
                 }
             }
         });
@@ -523,7 +521,7 @@ public class ListarViajesActivity extends BaseActivity {
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put("/" + key , null);
                         mDataBase.updateChildren(childUpdates);
-                        Snackbar.make(findViewById(R.id.lytContenedor), "Su viaje ha sido eliminado con éxito.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.listar_layout), "Su viaje ha sido eliminado con éxito.", Snackbar.LENGTH_SHORT).show();
 
                          //Avisar a usuarios que el viaje fue eliminado
                         if (viaje.getSuscriptos() != null && !viaje.getSuscriptos().isEmpty()){

@@ -3,6 +3,7 @@ package com.proyectos.florm.a_dedo;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
@@ -140,15 +141,27 @@ public class ViajeActivity extends BaseActivity{
         Viaje viaje = new Viaje(direccion, conductor, destino, origen, hora, fecha, pasajeros, informacion);
         mDatabase.child("viajes").child(key).setValue(viaje, new DatabaseReference.CompletionListener(){
             //El segundo parametro es para recibir un mensaje si hubo error en el setValue
+
+
             public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error == null){
-                    Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_SHORT).show();
-                    //Creo con exito y vuelvo a la actividad anterior
-                    hideProgressDialog();
-                    onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(ViajeActivity.this);
+                    builder.setMessage("Viaje creado correctamente")
+                            .setTitle("Éxito")
+                            .setNeutralButton(
+                                    "Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            hideProgressDialog();
+                                            onBackPressed(); //vuelve a la Actividad o Fragmento anterior al que te encuentras en el momento
+                                        }
+                                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    //Snackbar.make(findViewById(R.id.drawer_layout), "Viaje creado correctamente", Snackbar.LENGTH_LONG).show();
+
                 }
                 else{
-                    Snackbar.make(findViewById(R.id.drawer_layout), "No se pudo crear viaje!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.drawer_layout), "No se pudo crear viaje!", Snackbar.LENGTH_LONG).show();
                     Log.e("ERROR", "Error: " + error.getMessage());
                 }
             }
@@ -173,9 +186,6 @@ public class ViajeActivity extends BaseActivity{
     }
 
     private void setEditingEnabled(boolean enabled) {
-        // TODO ver como hacer esto con un fragmento
-//        inputDestino.setEnabled(enabled);
-//        inputOrigen.setEnabled(enabled);
         inputCantPasajerosSpinner.setEnabled(enabled);
         inputHora.setEnabled(enabled);
         inputFecha.setEnabled(enabled);
