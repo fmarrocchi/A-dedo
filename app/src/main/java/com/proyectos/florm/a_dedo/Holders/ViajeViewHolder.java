@@ -14,15 +14,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.R;
 
-
 public class ViajeViewHolder extends RecyclerView.ViewHolder{
         private View view;
         private Button botonSuscribir;
-        private TextView nombre, tel, foto, info;
+        private TextView nombre, tel, foto, info, direccion;
         private Boolean visible;
         private ImageButton btnVerMas;
 
-        public ViajeViewHolder(View itemView) {
+    public ViajeViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             botonSuscribir = view.findViewById(R.id.btn_suscribir);
@@ -30,99 +29,122 @@ public class ViajeViewHolder extends RecyclerView.ViewHolder{
             visible = false;
         }
 
-        public void setDestino(String destino) {
-            TextView field = view.findViewById(R.id.lblDestino);
-            field.setText(destino);
-        }
+    public ImageButton getBtnVerMas() {
+        return btnVerMas;
+    }
 
-        public ImageButton getBtnVerMas() {
-            return btnVerMas;
-        }
+    public void setBtnVerMas(ImageButton btnVerMas) {
+        this.btnVerMas = btnVerMas;
+    }
 
-        public void setBtnVerMas(ImageButton btnVerMas) {
-            this.btnVerMas = btnVerMas;
-        }
+    public Button getBotonSuscribir() {
+        return botonSuscribir;
+    }
 
-        public Button getBotonSuscribir() {
-            return botonSuscribir;
-        }
+    public View getView() {
+        return view;
+    }
 
-        public View getView() {
-            return view;
-        }
+    public void setOrigen(String origen) {
+        TextView field = view.findViewById(R.id.lblOrigen);
+        field.setText(origen);
+    }
 
-        public void setOrigen(String origen) {
-            TextView field = view.findViewById(R.id.lblOrigen);
-            field.setText(origen);
-        }
+    public void setFecha(String fecha) {
+        TextView field = view.findViewById(R.id.lblFecha);
+        field.setText(fecha);
+    }
 
-        public void setFecha(String fecha) {
-            TextView field = view.findViewById(R.id.lblFecha);
-            field.setText(fecha);
-        }
+    public void setHora(String hora) {
+        TextView field = view.findViewById(R.id.lblHora);
+        field.setText(hora);
+    }
 
-        public void setHora(String hora) {
-            TextView field = view.findViewById(R.id.lblHora);
-            field.setText(hora);
-        }
+    public void setLugares(String lugares) {
+        TextView field = view.findViewById(R.id.lblLugares);
+        field.setText(lugares);
+    }
 
-        public void setLugares(String lugares) {
-            TextView field = view.findViewById(R.id.lblLugares);
-            field.setText(lugares);
-        }
+    public void setDestino(String destino) {
+        TextView field = view.findViewById(R.id.lblDestino);
+        field.setText(destino);
+    }
 
-        public void setInformacion(String informacion) {
-            info = view.findViewById(R.id.lblInformacion);
-            info.setText(informacion);
-            info.setVisibility(View.GONE);
-        }
+    public void setInformacion(String informacion) {
+        info = view.findViewById(R.id.lblInformacion);
+        info.setText(informacion);
+        info.setVisibility(View.GONE);
+    }
 
-        public void setDatosConductor(String conductor) {
-            nombre = view.findViewById(R.id.lblConductor);
+    public void setDireccion(String dir) {
+        TextView field = view.findViewById(R.id.lblDireccion);
+        field.setText(dir);
+    }
+
+    public void setDatosConductor(String conductor) {
+        nombre = view.findViewById(R.id.lblConductor);
+        nombre.setVisibility(View.GONE);
+        tel = view.findViewById(R.id.lblTelefono);
+        tel.setVisibility(View.GONE);
+
+        //Instancia a la base de datos
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //apuntamos al nodo que queremos leer
+        DatabaseReference myRef = database.getReference("usuarios/"+conductor);
+
+        //Agregamos un ValueEventListener para que los cambios que se hagan en la base de datos se reflejen en la aplicacion
+        myRef.addValueEventListener(new ValueEventListener() {
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                //leeremos un objeto de tipo Usuario
+                User user = dataSnapshot.getValue(User.class);
+
+                nombre.setText(user.getNombre());
+                tel.setText(user.getTelefono());
+                //foto.setText(mDataBase.child(conductor).child("foto").toString());
+
+            }
+            public void onCancelled(DatabaseError error) {
+                Log.e("ERROR FIREBASE", error.getMessage());
+            }
+
+        });
+    }
+
+    public void masInfo(){
+        if (visible) {
             nombre.setVisibility(View.GONE);
-            tel = view.findViewById(R.id.lblTelefono);
             tel.setVisibility(View.GONE);
-          //  foto = (TextView) view.findViewById(R.id.lblFoto);
-
-            //Instancia a la base de datos
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            //apuntamos al nodo que queremos leer
-            DatabaseReference myRef = database.getReference("usuarios/"+conductor);
-
-            //Agregamos un ValueEventListener para que los cambios que se hagan en la base de datos se reflejen en la aplicacion
-            myRef.addValueEventListener(new ValueEventListener() {
-                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    //leeremos un objeto de tipo Usuario
-                    User user = dataSnapshot.getValue(User.class);
-
-                    nombre.setText(user.getNombre());
-                    tel.setText(user.getTelefono());
-                    //foto.setText(mDataBase.child(conductor).child("foto").toString());
-
-                }
-                public void onCancelled(DatabaseError error) {
-                    Log.e("ERROR FIREBASE", error.getMessage());
-                }
-
-            });
+            info.setVisibility(View.GONE);
+            btnVerMas.setImageResource(R.drawable.icono_flecha);
+            visible = false;
         }
-
-        public void masInfo(){
-            if (visible) {
-                nombre.setVisibility(View.GONE);
-                tel.setVisibility(View.GONE);
-                info.setVisibility(View.GONE);
-                btnVerMas.setImageResource(R.drawable.icono_flecha);
-                visible = false;
-            }
-            else{
-                nombre.setVisibility(View.VISIBLE);
-                tel.setVisibility(View.VISIBLE);
-                info.setVisibility(View.VISIBLE);
-                btnVerMas.setImageResource(R.drawable.icono_ver_menos);
-                visible = true;
-            }
-
+        else{
+            nombre.setVisibility(View.VISIBLE);
+            tel.setVisibility(View.VISIBLE);
+            info.setVisibility(View.VISIBLE);
+            btnVerMas.setImageResource(R.drawable.icono_ver_menos);
+            visible = true;
         }
     }
+
+    public void ocultar(){
+        botonSuscribir.setVisibility(View.GONE);
+        btnVerMas.setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion2).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion3).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion4).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion5).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion6).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion7).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion8).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion9).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion10).setVisibility(View.GONE);
+        view.findViewById(R.id.layout_suscripcion11).setVisibility(View.GONE);
+        view.findViewById(R.id.lblHora).setVisibility(View.GONE);
+        view.findViewById(R.id.lblFecha).setVisibility(View.GONE);
+        view.findViewById(R.id.lblDestino).setVisibility(View.GONE);
+        view.findViewById(R.id.lblOrigen).setVisibility(View.GONE);
+    }
+}
 

@@ -5,23 +5,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/layout_suscripcion"
     android:orientation="vertical"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    android:layout_marginTop="5dp"
     android:background="@color/white">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:id="@+id/layout_suscripcion2">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text=" DESDE "
+            android:text="DESDE"
+            android:id="@+id/layout_suscripcion10"
             android:drawableLeft="@drawable/icono_desde"
             android:gravity="start"
             style="@style/icono_lista_letra"/>
@@ -30,33 +32,61 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="15dp"
-            android:layout_marginHorizontal="10dp"/>
+            android:layout_marginHorizontal="4dp"/>
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:id="@+id/layout_suscripcion11"
             android:drawableLeft="@drawable/icono_hasta"
-            android:text=" HASTA "
+            android:text="HASTA"
             style="@style/icono_lista_letra"/>
         <TextView android:id="@+id/lblDestino"
             android:textSize="15dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_marginHorizontal="10dp"/>
+            android:layout_marginHorizontal="4dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_suscripcion3"
+        android:layout_marginVertical="5dp"
+        android:layout_marginLeft="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_suscripcion4"
+            android:drawableLeft="@drawable/icono_hasta"
+            android:text="DIRECCION DE SALIDA"
+            style="@style/icono_lista_letra"/>
+
+        <EditText android:id="@+id/lblDireccion"
+            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="32dp"
+            android:background="@null"
+            android:textColor="@color/gris"
+            android:enabled="false"/>
+
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:id="@+id/layout_suscripcion5"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal">
         <TextView android:id="@+id/lblFecha"
@@ -64,29 +94,35 @@
             android:layout_height="wrap_content"
             android:textSize="15dp"
             android:drawableLeft="@drawable/icono_fecha"
+            android:drawablePadding="5dp"
             android:layout_marginRight="10dp"
-            android:layout_marginHorizontal="10dp"/>
-        <TextView android:id="@+id/lblHora"
+            android:layout_marginHorizontal="15dp"/>
+
+        <TextView
+            android:id="@+id/lblHora"
             android:layout_width="wrap_content"
-            android:textSize="15dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="5dp"
+            android:layout_gravity="right"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginRight="10dp"
             android:drawableLeft="@drawable/icono_reloj"
-            android:layout_gravity="right"
-            android:layout_marginHorizontal="10dp"/>
+            android:textSize="15dp" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/layout_suscripcion6"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/lblLugares"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="15dp"
+            android:drawablePadding="5dp"
             android:layout_marginRight="10dp"
             android:drawableLeft="@drawable/silla_auto"
             android:textStyle="bold"
@@ -97,13 +133,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/layout_suscripcion7"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/lblConductor"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
+            android:drawablePadding="5dp"
+            android:layout_marginHorizontal="15dp"
             android:drawableLeft="@drawable/usuario"
             android:layout_marginRight="10dp"
             android:textStyle="bold"
@@ -114,13 +152,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="15dp"
-        android:orientation="horizontal">
+        android:layout_marginLeft="15dp"
+        android:orientation="horizontal"
+        android:id="@+id/layout_suscripcion8">
         <TextView
             android:id="@+id/lblTelefono"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="15dp"
+            android:drawablePadding="5dp"
             android:drawableLeft="@drawable/icono_tel"
             android:layout_marginRight="10dp"
             android:textStyle="bold"
@@ -130,18 +170,20 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/layout_suscripcion9"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/lblInformacion"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
-            android:drawableLeft="@drawable/icono_info"
+            android:layout_marginHorizontal="15dp"
+            android:drawablePadding="5dp"
             android:layout_marginRight="10dp"
-            android:textStyle="bold"
-            android:textSize="15dp" />
+            android:drawableLeft="@drawable/icono_info"
+            android:textSize="15dp"
+            android:textStyle="bold" />
     </LinearLayout>
     <ImageButton
         android:id="@+id/btn_ver_mas"

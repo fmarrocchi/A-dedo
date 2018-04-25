@@ -25,6 +25,8 @@ public class Viaje implements Serializable{
         lugares = lug;
         hora = hs;
         fecha = f;
+        if(info=="")
+            info="No hay información adicional.";
         informacion = info;
     }
 

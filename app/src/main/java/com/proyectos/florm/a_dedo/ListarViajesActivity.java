@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,12 +86,13 @@ public class ListarViajesActivity extends BaseActivity {
                         final String itemId = getRef(position).getKey();
 
                         if ((viaje.getDestino().equals(destino)) && (viaje.getFecha().equals(fecha)) && (!viaje.getConductor().equals(usuario)) ) {
-                            viajeViewHolder.setDestino(" " + viaje.getDestino());
-                            viajeViewHolder.setOrigen(" " + viaje.getOrigen());
-                            viajeViewHolder.setFecha(" " + viaje.getFecha());
-                            viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                            viajeViewHolder.setLugares(" " + viaje.getLugares());
-                            viajeViewHolder.setInformacion(" " + viaje.getInformacion());
+                            viajeViewHolder.setDestino(viaje.getDestino());
+                            viajeViewHolder.setOrigen(viaje.getOrigen());
+                            viajeViewHolder.setDireccion(viaje.getDireccion());
+                            viajeViewHolder.setFecha(viaje.getFecha());
+                            viajeViewHolder.setHora(viaje.getHora());
+                            viajeViewHolder.setLugares("" + viaje.getLugares());
+                            viajeViewHolder.setInformacion(viaje.getInformacion());
                             viajeViewHolder.setDatosConductor(viaje.getConductor());
 
                             viajeViewHolder.getBotonSuscribir().setOnClickListener(new View.OnClickListener() {
@@ -107,6 +109,7 @@ public class ListarViajesActivity extends BaseActivity {
                                 }
                             });
                         }
+                        else viajeViewHolder.ocultar();
                     }
                 };
         return adapter;
@@ -119,13 +122,13 @@ public class ListarViajesActivity extends BaseActivity {
                 new FirebaseRecyclerAdapter<Viaje, EditViajeViewHolder>(Viaje.class, R.layout.listitem_editar_viaje, EditViajeViewHolder.class, mDataBase.orderByChild("conductor").equalTo(conductor)) {
                     public void populateViewHolder(final EditViajeViewHolder viajeViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
-                        viajeViewHolder.setOrigen(" " + viaje.getOrigen());
-                        viajeViewHolder.setDestino(" " + viaje.getDestino());
-                        viajeViewHolder.setFecha(" " + viaje.getFecha());
-                        viajeViewHolder.setHora(" " + viaje.getHora() + " hs");
-                        viajeViewHolder.setLugares(" " + viaje.getLugares());
-                        viajeViewHolder.setDireccion(" "+ viaje.getDireccion());
-                        viajeViewHolder.setInformacion(" " + viaje.getInformacion());
+                        viajeViewHolder.setOrigen(viaje.getOrigen());
+                        viajeViewHolder.setDestino(viaje.getDestino());
+                        viajeViewHolder.setFecha(viaje.getFecha());
+                        viajeViewHolder.setHora(viaje.getHora());
+                        viajeViewHolder.setLugares("" + viaje.getLugares());
+                        viajeViewHolder.setDireccion(viaje.getDireccion());
+                        viajeViewHolder.setInformacion(viaje.getInformacion());
 
                         final String list_viaje_id  = getRef(position).getKey();
 
@@ -137,7 +140,7 @@ public class ListarViajesActivity extends BaseActivity {
 
                         viajeViewHolder.getBotonEliminar().setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                eliminarViaje(itemId);
+                                eliminarViaje(itemId, viaje);
                             }
                         });
 
@@ -146,6 +149,7 @@ public class ListarViajesActivity extends BaseActivity {
                                 if (viajeViewHolder.getBotonVerSuscriptos().getText().equals("Ver suscriptos")){
                                     verSuscriptos(viajeViewHolder, viaje, itemId);
                                     viajeViewHolder.getBotonVerSuscriptos().setText("Ocultar");
+                                    viajeViewHolder.getTextSuscriptos().setVisibility(View.VISIBLE);
                                 }
                                 else {
                                     viajeViewHolder.getTextSuscriptos().setVisibility(View.GONE);
@@ -165,14 +169,14 @@ public class ListarViajesActivity extends BaseActivity {
                     public void populateViewHolder(final MisSuscripcionesViewHolder suscripcionesViewHolder, final Viaje viaje, int position) {
                         final String itemId = getRef(position).getKey();
 
-                        if (viaje != null && viaje.getSuscriptos()!= null ) {
-                            if (viaje.getSuscriptos().containsKey(usuario)){
-                               suscripcionesViewHolder.setDestino(" " + viaje.getDestino());
-                                suscripcionesViewHolder.setOrigen(" " + viaje.getOrigen());
-                                suscripcionesViewHolder.setFecha(" " + viaje.getFecha());
-                                suscripcionesViewHolder.setHora(" " + viaje.getHora() + " hs");
-                                suscripcionesViewHolder.setLugares(" " + viaje.getLugares());
-                                suscripcionesViewHolder.setInformacion(" " + viaje.getInformacion());
+                        if (viaje != null && viaje.getSuscriptos()!= null && viaje.getSuscriptos().containsKey(usuario)){
+                                suscripcionesViewHolder.setDestino(viaje.getDestino());
+                                suscripcionesViewHolder.setOrigen(viaje.getOrigen());
+                                suscripcionesViewHolder.setDireccion(viaje.getDireccion());
+                                suscripcionesViewHolder.setFecha(viaje.getFecha());
+                                suscripcionesViewHolder.setHora(viaje.getHora());
+                                suscripcionesViewHolder.setLugares("" + viaje.getLugares());
+                                suscripcionesViewHolder.setInformacion(viaje.getInformacion());
                                 suscripcionesViewHolder.setDatosConductor(viaje.getConductor());
 
                                 suscripcionesViewHolder.getBotonDesuscribir().setOnClickListener(new View.OnClickListener() {
@@ -182,13 +186,14 @@ public class ListarViajesActivity extends BaseActivity {
                                 });
                                 final String list_viaje_id = getRef(position).getKey();
 
-                                suscripcionesViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                                suscripcionesViewHolder.getBtnVerMas().setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
                                         suscripcionesViewHolder.masInfo();
                                     }
                                 });
-                            }
                         }
+                        else
+                            suscripcionesViewHolder.ocultar();
                     }
                 };
         return adapter;
@@ -204,16 +209,13 @@ public class ListarViajesActivity extends BaseActivity {
             adapter = adapterBuscar();
         else
             if(opcion.equals("misviajes")){
-                Log.i("MIS VIAJES", "la opcion es misviajes");
                 adapter = adapterMisViajes();}
             else
                 if (opcion.equals("missuscripciones")){
-                    Log.i("MIS VIAJES", "voy a llamar al adapter");
                     adapter = adapterMisSuscripciones();
                 }
                 else
                     Log.i("MIS VIAJES", "no hay adapter");
-        Log.i("MIS VIAJES", "adapter es null: "+adapter.equals(null));
        // recycler.setAlpha(0.90f); //Dar transparencia
         recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(adapter);
@@ -265,7 +267,7 @@ public class ListarViajesActivity extends BaseActivity {
                             mDataBase.updateChildren(childUpdates);
 
                             //mostrar cartel de reservacion de lugares
-                            Snackbar.make(findViewById(R.id.listar_layout), cant_a_reservar + " lugares reservados", Snackbar.LENGTH_INDEFINITE)
+                            Snackbar.make(findViewById(R.id.listar_layout), cant_a_reservar + " lugares reservados", Snackbar.LENGTH_LONG)
                                     .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
                                     .setAction("Aceptar", new View.OnClickListener() {
                                         public void onClick(View view) {
@@ -273,10 +275,11 @@ public class ListarViajesActivity extends BaseActivity {
                                         }
                                     })
                                     .show();
+                            onBackPressed();
                         }
                         else{
-                            //mostrar cartel de lugares insuficientes
-                            Snackbar.make(findViewById(R.id.listar_layout), "No hay suficientes lugares!", Snackbar.LENGTH_INDEFINITE)
+                            //Mostrar cartel de lugares insuficientes
+                            Snackbar.make(findViewById(R.id.listar_layout), "No hay suficientes lugares!", Snackbar.LENGTH_LONG)
                                     .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
                                     .setAction("Aceptar", new View.OnClickListener() {
                                         public void onClick(View view) {
@@ -299,7 +302,6 @@ public class ListarViajesActivity extends BaseActivity {
     }
 
     public void desuscribirUsuario(Viaje v, String k) {
-        Log.i("DESUSCRIBIR", "LLEGUE");
         final Viaje viaje = v;
         final String key = k; //Clave del viaje en bd para luego modificarlo
 
@@ -330,7 +332,7 @@ public class ListarViajesActivity extends BaseActivity {
         mDataBase.updateChildren(childUpdates);
 
         //Mostrar mensaje al usuario
-        Snackbar.make(findViewById(R.id.listar_layout), "Desuscrito del viaje!", Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(findViewById(R.id.listar_layout), "Desuscrito del viaje!", Snackbar.LENGTH_LONG)
                 .setActionTextColor(getResources().getColor(R.color.snackbar_aceptar))
                 .setAction("Aceptar", new View.OnClickListener() {
                     public void onClick(View view) {
@@ -363,43 +365,41 @@ public class ListarViajesActivity extends BaseActivity {
 
     public void verSuscriptos(EditViajeViewHolder viajeViewHolder, Viaje viaje, String k){
         Map<String, Integer> suscriptos = viaje.getSuscriptos();
-        if (suscriptos!=null){
-            if (suscriptos.isEmpty()){
-                Log.i("Suscriptos: ", "no hay");
-                Snackbar.make(findViewById(R.id.listar_layout), "Aún no tenés suscriptos", Snackbar.LENGTH_LONG).show();
+        if (suscriptos!=null) {
+            if (!suscriptos.isEmpty()) {
+                listarSuscriptos(viajeViewHolder, suscriptos);
             }
             else{
-                Log.i("LOS SUSCRIPTOS SON: ", suscriptos.toString());
-                listarSuscritos(viajeViewHolder, suscriptos);
+                final TextView suscriptosText = viajeViewHolder.getTextSuscriptos();
+                suscriptosText.setText("Aún no hay suscripciones");
             }
-
         }
-
+        else{
+               final TextView suscriptosText = viajeViewHolder.getTextSuscriptos();
+                suscriptosText.setText("Aún no hay suscripciones");
+        }
     }
 
-    public void listarSuscritos(EditViajeViewHolder viajeViewHolder, Map<String, Integer> suscriptos){
+    public void listarSuscriptos(EditViajeViewHolder viajeViewHolder, Map<String, Integer> suscriptos){
         final TextView suscriptosText = viajeViewHolder.getTextSuscriptos();
-
         //Itero sobre el mapeo de suscritos al viaje (idUsuario,cantsuscripciones)
         for (Map.Entry<String, Integer> entry : suscriptos.entrySet()) {
             String idSuscripto = entry.getKey();
             final String cantLugares = entry.getValue().toString();
 
             suscriptosText.setText(""); //Vacio el campo de texto
-            suscriptosText.setVisibility(View.VISIBLE);
 
             //Obtengo datos del usuario con id en el elemento actual del mapeo
             database.getReference().child("usuarios/"+idSuscripto)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                            User user = dataSnapshot.getValue(User.class);
-                            String suscriptoAMostrar = "\n"+ user.getNombre()+" \n@ "+user.getMail()+" \n☎ "+ user.getTelefono()+" \nLugares reservados: "+cantLugares+"\n";
-                            suscriptosText.setText(suscriptosText.getText()+ suscriptoAMostrar);
+                           String suscriptoAMostrar = "\n"+ user.getNombre()+" \n@ "+user.getMail()+" \n☎ "+ user.getTelefono()+" \nLugares reservados: "+cantLugares+"\n";
+                           suscriptosText.setText(suscriptosText.getText()+ suscriptoAMostrar);
                         }
                         public void onCancelled(DatabaseError error) {
                             Log.e("ERROR FIREBASE", error.getMessage());
                         }
-
                     });
         }
     }
@@ -443,56 +443,54 @@ public class ListarViajesActivity extends BaseActivity {
                     mDataBase.updateChildren(childUpdates);
 
                     ValueEventListener postListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                       public void onDataChange(DataSnapshot dataSnapshot) {
                             Snackbar.make(findViewById(R.id.listar_layout), "Los cambios fueron realizados con exito.", Snackbar.LENGTH_SHORT).show();
                         }
-
-                        @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Snackbar.make(findViewById(R.id.listar_layout), "Lamentamos que los cambios no pudieron ser guardados.", Snackbar.LENGTH_SHORT).show();
                         }
                     };
                     mDataBase.addValueEventListener(postListener);
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+                    //Si hay suscriptos pregunto si quiero informar a los suscriptos del cambio
+                    if (viaje.getSuscriptos() != null && !viaje.getSuscriptos().isEmpty()) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+                        final TextView mailsSuscriptos = findViewById(R.id.mails_suscriptos);
+                        builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
+                                .setTitle("Confirmación")
+                                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String mails="";
+                                        String subject = "Modificación de viaje";
+                                        String message = "Hola.\nTe informamos que se ha efectuado una modificacion en un viaje al que te has suscripto. Para más información ingresá en la app A-dedo y mira tus suscripciones.";
+                                        obtenerMailsSuscriptos(viaje.getSuscriptos(), subject, message);
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
 
-                builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
-                        .setTitle("Confirmación")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String subject = "Modificación de viaje";
-                                String message = "Hola. Te informamos que se ha efectuado una modificacion en un viaje al que te has suscripto.";
-
-                                sendEmails(subject, message, obtenerMailsSuscriptos(viaje.getSuscriptos()));
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                    lblDireccion.setEnabled(false);
-                    lblInfo.setEnabled(false);
-                    lblHora.setEnabled(false);
-                    lblFecha.setEnabled(false);
-                    botonGuardar.setVisibility(View.INVISIBLE);
-                    botonEditar.setEnabled(true);
-                    lblHora.setClickable(false);
+                lblDireccion.setEnabled(false);
+                lblInfo.setEnabled(false);
+                lblHora.setEnabled(false);
+                lblFecha.setEnabled(false);
+                botonGuardar.setVisibility(View.INVISIBLE);
+                botonEditar.setEnabled(true);
+                lblHora.setClickable(false);
                 }
-
-
             }
         });
     }
 
-     public void eliminarViaje(String k){
+    public void eliminarViaje(String k, Viaje v){
         final String key = k;
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(ListarViajesActivity.this);
+        final Viaje viaje = v;
 
         builder.setMessage("¿Está seguro de que quiere eliminar este viaje?")
                 .setTitle("Confirmación")
@@ -503,8 +501,14 @@ public class ListarViajesActivity extends BaseActivity {
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put("/" + key , null);
                         mDataBase.updateChildren(childUpdates);
-
                         Snackbar.make(findViewById(R.id.lytContenedor), "Su viaje ha sido eliminado con éxito.", Snackbar.LENGTH_SHORT).show();
+
+                         //Avisar a usuarios que el viaje fue eliminado
+                        if (viaje.getSuscriptos() != null && !viaje.getSuscriptos().isEmpty()){
+                            String subject = "Cancelación de viaje";
+                            String message = "Hola. Te informamos que se ha cancelado un viaje al que te has suscripto.";
+                            obtenerMailsSuscriptos(viaje.getSuscriptos(), subject, message);
+                        }
 
                     }
                 })
@@ -516,31 +520,10 @@ public class ListarViajesActivity extends BaseActivity {
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
-
-        //TODO mandar mails para avisar a los pasajeros
-         final AlertDialog.Builder builder2 = new AlertDialog.Builder(ListarViajesActivity.this);
-
-         builder.setMessage("¿Desea informar el cambio a los viajantes de su viaje?")
-                 .setTitle("Confirmación")
-                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                     public void onClick(DialogInterface dialog, int id) {
-                         String subject = "Cancelación de viaje";
-                         String message = "Hola. Te informamos que se ha cancelado un viaje al que te has suscripto.";
-                         String to = "mlevisrossi@gmail.com";//TODO mails de los usuarios suscriptos al viaje
-                         sendEmails(subject, message, to);
-                     }
-                 })
-                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                     public void onClick(DialogInterface dialog, int id) {
-                         dialog.cancel();
-                     }
-                 });
-         AlertDialog dialog2 = builder2.create();
-         dialog.show();
     }
 
     public void sendEmails(String subject, String message, String to) {
-
+        Log.i("MAILS", "los mails son: "+to);
         Intent email = new Intent(Intent.ACTION_SEND);
         email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
         email.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -552,7 +535,7 @@ public class ListarViajesActivity extends BaseActivity {
         startActivity(Intent.createChooser(email, "Seleccione un cliente de mail:"));
     }
 
-    public String obtenerMailsSuscriptos(Map<String, Integer> suscriptos){
+    public void obtenerMailsSuscriptos(Map<String, Integer> suscriptos, final String subject, final String message){
         final TextView mailsSuscriptos = findViewById(R.id.mails_suscriptos);
         mailsSuscriptos.setText("");
 
@@ -563,19 +546,15 @@ public class ListarViajesActivity extends BaseActivity {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
-                            Log.i("MAILS", "agrego "+user.getMail());
-                            mailsSuscriptos.setText(mailsSuscriptos.getText()+";"+user.getMail());
+                            mailsSuscriptos.setText(mailsSuscriptos.getText()+user.getMail()+";");
+                            sendEmails(subject, message, mailsSuscriptos.getText().toString());
                         }
                         public void onCancelled(DatabaseError error) {
                             Log.e("ERROR FIREBASE", error.getMessage());
                         }
                     });
         }
-        String mails = mailsSuscriptos.getText().toString();
-        Log.i("MAILS ", "(termine) "+mails);
-        return mails;
     }
-
 
     public void showTimePickerDialog(View view) {
         Log.d("asd", "clickie en hora");
@@ -619,6 +598,5 @@ public class ListarViajesActivity extends BaseActivity {
         }
         return esValido;
     }
-
 
 }

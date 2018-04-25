@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:text="a-dedo"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="60dp"
@@ -30,9 +30,8 @@
             android:text="Viajes compartidos."
             android:gravity="center"
             android:textColor="@color/white"
-            android:paddingBottom="40dp"
+            android:paddingBottom="20dp"
             android:textSize="20dp" />
-
 
         <Button
             android:id="@+id/boton_busca"

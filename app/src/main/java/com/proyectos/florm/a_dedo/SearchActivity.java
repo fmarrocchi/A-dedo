@@ -90,6 +90,7 @@ public class SearchActivity extends AppCompatActivity {
             intent.putExtra("fecha", fecha);
             intent.putExtra("opcion", "buscar");
 
+            finish();
             startActivity(intent);
         }
     }

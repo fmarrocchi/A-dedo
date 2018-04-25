@@ -13,11 +13,10 @@ import org.w3c.dom.Text;
 public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private View view;
     private ImageButton botonEditar, botonEliminar, botonGuardar;
-    private EditText lblHora, lblFecha;
-    private TextView lblDireccion, textSuscriptos;
+    private EditText lblHora, lblInfo;
+    private TextView lblDireccion, textSuscriptos, lblFecha;
     private Button botonSuscriptos;
 
-    private EditText lblInfo;
     private Boolean visible;
 
     public Button getBotonSuscriptos() {
@@ -35,6 +34,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     public void setTextSuscriptos(TextView textSuscriptos) {
         this.textSuscriptos = textSuscriptos;
     }
+
     public void setView(View view) {
         this.view = view;
     }
@@ -119,7 +119,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
         return lblHora;
     }
 
-    public EditText getLblFecha() {
+    public TextView getLblFecha() {
         return lblFecha;
     }
 
