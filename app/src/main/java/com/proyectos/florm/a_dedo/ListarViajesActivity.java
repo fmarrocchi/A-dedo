@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,11 +73,15 @@ public class ListarViajesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar_viajes);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
         //Volver atras con la barra de tareas
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         toolbarUser = findViewById(R.id.toolbar_user);
 
@@ -185,7 +190,6 @@ public class ListarViajesActivity extends BaseActivity {
                                 suscripcionesViewHolder.setDireccion(viaje.getDireccion());
                                 suscripcionesViewHolder.setFecha(viaje.getFecha());
                                 suscripcionesViewHolder.setHora(viaje.getHora());
-                                suscripcionesViewHolder.setLugares("" + viaje.getLugares());
                                 suscripcionesViewHolder.setInformacion(viaje.getInformacion());
                                 suscripcionesViewHolder.setDatosConductor(viaje.getConductor());
 
@@ -213,6 +217,7 @@ public class ListarViajesActivity extends BaseActivity {
         //Inicialización RecyclerView
         recycler = findViewById(R.id.recycler_viajes);
         recycler.setHasFixedSize(true);
+        recycler.setNestedScrollingEnabled(true);
 
         String opcion = getIntent().getExtras().getString("opcion");
         if(opcion.equals("buscar"))
@@ -372,13 +377,11 @@ public class ListarViajesActivity extends BaseActivity {
                 toolbarUser.setText(name);
             Uri urlImage = user.getPhotoUrl();
             if(urlImage == null){
-                Log.d("dfdsf", "url de la imagen es nula");
+                Log.d("URL IMAGEN", "url de la imagen es nula");
             }
             else{
                 Picasso.with(this).load(urlImage).transform(new CircleTransform()).into(photoViewer);
             }
-
-
         }
     }
 

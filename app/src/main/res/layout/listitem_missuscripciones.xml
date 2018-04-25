@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_suscripcion2"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
         <TextView
@@ -39,7 +39,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:id="@+id/layout_suscripcion3"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal">
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/layout_suscripcion4"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="7dp"
         android:layout_marginVertical="5dp"
         android:orientation="vertical">
         <TextView
@@ -87,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/layout_suscripcion5"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal">
         <TextView android:id="@+id/lblFecha"
@@ -112,29 +112,9 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout_suscripcion6"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/lblLugares"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawablePadding="5dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginRight="10dp"
-            android:drawableLeft="@drawable/silla_auto"
-            android:textStyle="bold"
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/layout_suscripcion7"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/lblConductor"
@@ -153,7 +133,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_suscripcion8"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/lblTelefono"
@@ -172,7 +152,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:id="@+id/layout_suscripcion9"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/lblInformacion"

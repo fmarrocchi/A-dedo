@@ -67,11 +67,6 @@ public class MisSuscripcionesViewHolder extends RecyclerView.ViewHolder{
         field.setText(hora);
     }
 
-    public void setLugares(String lugares) {
-        TextView field = (TextView) view.findViewById(R.id.lblLugares);
-        field.setText(lugares);
-    }
-
     public void setInformacion(String informacion) {
         info = (TextView) view.findViewById(R.id.lblInformacion);
         info.setText(informacion);
@@ -130,7 +125,6 @@ public class MisSuscripcionesViewHolder extends RecyclerView.ViewHolder{
         view.findViewById(R.id.layout_suscripcion3).setVisibility(View.GONE);
         view.findViewById(R.id.layout_suscripcion4).setVisibility(View.GONE);
         view.findViewById(R.id.layout_suscripcion5).setVisibility(View.GONE);
-        view.findViewById(R.id.layout_suscripcion6).setVisibility(View.GONE);
         view.findViewById(R.id.layout_suscripcion7).setVisibility(View.GONE);
         view.findViewById(R.id.layout_suscripcion8).setVisibility(View.GONE);
         view.findViewById(R.id.layout_suscripcion9).setVisibility(View.GONE);

@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("");
 
         crear = findViewById(R.id.boton_crea);
         crear.setAlpha(0.70f); //Dar transparencia
