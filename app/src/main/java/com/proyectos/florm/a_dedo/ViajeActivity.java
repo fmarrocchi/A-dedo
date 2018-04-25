@@ -200,6 +200,7 @@ public class ViajeActivity extends BaseActivity{
                 anioViaje=year; diaViaje=day; mesViaje=month+1;
             }
         },anio, mes, dia);
+        dateDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         //Muestro el widget
         dateDialog.show();
     }
@@ -230,19 +231,6 @@ public class ViajeActivity extends BaseActivity{
         if (TextUtils.isEmpty(fecha)) {
             esValido= false;
         }
-
-        //Valido que la fecha del viaje sea despues que hoy
-        Date fechaViaje = new Date(anioViaje, mesViaje, diaViaje);
-        fechaViaje.setHours(horaViaje); fechaViaje.setMinutes(minViaje);
-        Date hoy = diaDehoy();
-//        if(hoy.before(fechaViaje)){
-//            Log.d("ms", "La fecha del viaje "+ fechaViaje + " es anterior a hoy: " + hoy);
-//            AlertDialog.Builder builder = new AlertDialog.Builder(ViajeActivity.this);
-//            builder.setMessage("La fecha del viaje es anterior al dia de hoy. Por favor, elija otra fecha.").setTitle("Error");
-//            AlertDialog dialog = builder.create();
-//            dialog.show();
-//            return false;
-//        }
 
         //Si no hay informacion extra le asigno un guion (no es campo requerido)
         if (TextUtils.isEmpty(informacion)) {
@@ -276,17 +264,4 @@ public class ViajeActivity extends BaseActivity{
         return esValido;
     }
 
-    public Date diaDehoy(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-        Date date = new Date();
-
-        String fecha = dateFormat.format(date);
-        try {
-            date = dateFormat.parse(fecha);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return date;
-    }
 }

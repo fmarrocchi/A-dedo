@@ -200,6 +200,7 @@
                     android:textColor="@color/url"
                     android:textSize="15dp" />
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

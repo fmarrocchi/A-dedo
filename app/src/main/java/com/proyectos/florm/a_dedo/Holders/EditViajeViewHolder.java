@@ -17,6 +17,7 @@ public class EditViajeViewHolder extends RecyclerView.ViewHolder{
     private TextView lblDireccion, textSuscriptos, lblFecha;
     private Button botonSuscriptos;
 
+
     private Boolean visible;
 
     public Button getBotonSuscriptos() {

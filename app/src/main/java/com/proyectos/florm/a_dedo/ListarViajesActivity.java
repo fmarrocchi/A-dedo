@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -31,6 +34,8 @@ import com.proyectos.florm.a_dedo.Holders.MisSuscripcionesViewHolder;
 import com.proyectos.florm.a_dedo.Holders.ViajeViewHolder;
 import com.proyectos.florm.a_dedo.Models.User;
 import com.proyectos.florm.a_dedo.Models.Viaje;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,11 +45,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 public class ListarViajesActivity extends BaseActivity {
 
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recycler;
     private TextView toolbarUser;
+    private ImageView photoViewer;
     private TextView lblHora;
     private int contViajes;
     String destino;
@@ -71,6 +79,8 @@ public class ListarViajesActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         toolbarUser = findViewById(R.id.toolbar_user);
+
+        photoViewer = findViewById(R.id.photoViewer);
 
         mostrarViajes();
     }
@@ -360,6 +370,15 @@ public class ListarViajesActivity extends BaseActivity {
             String name = user.getDisplayName();
             if (name != null)
                 toolbarUser.setText(name);
+            Uri urlImage = user.getPhotoUrl();
+            if(urlImage == null){
+                Log.d("dfdsf", "url de la imagen es nula");
+            }
+            else{
+                Picasso.with(this).load(urlImage).transform(new CircleTransform()).into(photoViewer);
+            }
+
+
         }
     }
 

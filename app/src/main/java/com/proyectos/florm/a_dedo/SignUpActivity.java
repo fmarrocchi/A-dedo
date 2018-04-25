@@ -1,8 +1,12 @@
 package com.proyectos.florm.a_dedo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,11 +26,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.proyectos.florm.a_dedo.Models.User;
 
+import android.widget.ImageView;
+
+import java.io.File;
+
 public class SignUpActivity extends BaseActivity {
     private EditText inputEmail, inputPassword, inputPasswordConfirm, inputNombre, inputApellido, inputFoto, inputTel;
     private Button btnSignIn, btnSignUp;
     private FirebaseAuth auth;
     private DatabaseReference mDatabase;
+
+    //Variables para la foto
+    private AlertDialog _photoDialog;
+    private Uri mImageUri;
+    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, ACTIVITY_SHARE = 1030;
+    private PhotoUtils photoUtils;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,32 @@ public class SignUpActivity extends BaseActivity {
         //Volver atras con la barra de tareas
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        //Foto
+        Boolean fromShare;
+        photoUtils = new PhotoUtils(this);
+        // Get intent, action and MIME type
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                fromShare = true;
+            } else
+            if (type.startsWith("image/")) {
+                fromShare = true;
+                mImageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                inputFoto.setText(mImageUri.toString());
+
+            }
+        }
+
+        inputFoto.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                if(!getPhotoDialog().isShowing() && !isFinishing())
+                    getPhotoDialog().show();
+            }
+        });
     }
 
     private void signUp(){
@@ -71,6 +111,7 @@ public class SignUpActivity extends BaseActivity {
         final String nombre = inputNombre.getText().toString().trim();
         final String apellido = inputApellido.getText().toString().trim();
         final String foto = inputFoto.getText().toString().trim();
+        final String foto2;
         final String tel = inputTel.getText().toString().trim();
 
         if (TextUtils.isEmpty(mail)) {
@@ -101,14 +142,15 @@ public class SignUpActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Ingresar telefono!", Toast.LENGTH_SHORT).show();
             return;
         }
-        //TODO insertar foto y mostrarla
-                /* if (!URLUtil.isValidUrl(foto))
-                    foto = "http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png";*/
 
         if (!password.equals(passwordConfirm)){
             Toast.makeText(getApplicationContext(), "Las contraseñas no coinciden!", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (!URLUtil.isValidUrl(foto))
+            inputFoto.setText("http://www.prevenciondelaviolencia.org/sites/all/themes/pcc/images/user.png");
+
         showProgressDialog();
 
         //create authentication
@@ -127,7 +169,7 @@ public class SignUpActivity extends BaseActivity {
                             user.updateProfile(profileUpdates);
                             Log.i("USER","agregue nombre");
 
-                            crearUserBD(mail, nombre+" "+apellido, tel, foto);
+                            crearUserBD(mail, nombre+" "+apellido, tel, inputFoto.getText().toString().trim());
 
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();
@@ -153,5 +195,59 @@ public class SignUpActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+
+    private AlertDialog getPhotoDialog() {
+        if (_photoDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
+            builder.setTitle("Seleccionar foto desde..");
+            builder.setPositiveButton("Camara", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    File photo = null;
+                    try {
+                        // place where to store camera taken picture
+                        photo = PhotoUtils.createTemporaryFile("picture", ".jpg", SignUpActivity.this);
+                        photo.delete();
+                    } catch (Exception e) {
+                        Log.v(getClass().getSimpleName(),
+                                "Can't create file to take picture!");
+                    }
+                    mImageUri = Uri.fromFile(photo);
+                    inputFoto.setText(mImageUri.toString());
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                    startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
+                }
+            });
+            builder.setNegativeButton("Galeria", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, ACTIVITY_SELECT_IMAGE);
+                }
+
+            });
+            _photoDialog = builder.create();
+
+        }
+        return _photoDialog;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTIVITY_SELECT_IMAGE && resultCode == RESULT_OK) {
+            mImageUri = data.getData();
+            inputFoto.setText(mImageUri.toString());
+            //getImage(mImageUri);
+        } else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA && resultCode == RESULT_OK) {
+            //getImage(mImageUri);
+        }
     }
 }

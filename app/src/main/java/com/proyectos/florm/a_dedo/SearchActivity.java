@@ -126,6 +126,7 @@ public class SearchActivity extends AppCompatActivity {
                 etPlannedDate.setText(selectedDate);
             }
         },anio, mes, dia);
+        dateDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         //Muestro el widget
         dateDialog.show();
     }

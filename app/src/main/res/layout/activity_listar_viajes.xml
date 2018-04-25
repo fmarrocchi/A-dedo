@@ -37,6 +37,11 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+            <ImageView
+                android:id="@+id/photoViewer"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+
             <TextView
                 android:id="@+id/toolbar_user"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
